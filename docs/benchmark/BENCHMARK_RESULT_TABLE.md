@@ -105,11 +105,11 @@ Tracks AI-generated `.va` files evaluated against spec-to-va tasks.
 
 | owner | task_name | category | task_path | gold_answer_exists | dut_compile | sim_correct | automated_check | verification_status | result_path | pr_link | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| shenbufan | clk_divider | digital-logic | `tasks/spec-to-va/voltage/digital-logic/clk_divider` | `no` | `[TODO]` | `[TODO]` | `no` | `pending` | `[TODO]` | `[TODO]` | needs gold .va + automated check |
-| shenbufan | prbs7 | digital-logic | `tasks/spec-to-va/voltage/digital-logic/prbs7` | `no` | `[TODO]` | `[TODO]` | `no` | `pending` | `[TODO]` | `[TODO]` | needs gold .va + automated check |
-| shenbufan | therm2bin | digital-logic | `tasks/spec-to-va/voltage/digital-logic/therm2bin` | `no` | `[TODO]` | `[TODO]` | `no` | `pending` | `[TODO]` | `[TODO]` | needs gold .va + automated check |
-| shenbufan | bbpd | pll-clock | `tasks/spec-to-va/voltage/pll-clock/bbpd` | `no` | `[TODO]` | `[TODO]` | `no` | `pending` | `[TODO]` | `[TODO]` | bang-bang phase detector; needs gold .va |
-| shenbufan | multimod_divider | pll-clock | `tasks/spec-to-va/voltage/pll-clock/multimod_divider` | `no` | `[TODO]` | `[TODO]` | `no` | `pending` | `[TODO]` | `[TODO]` | needs gold .va + automated check |
+| shenbufan | clk_divider | digital-logic | `tasks/spec-to-va/voltage/digital-logic/clk_divider` | `yes` | `pass` | `pass` | `yes` | `passed` | `behavioral-veriloga-eval/results/clk_div_day1` | `origin/pr-2` | backfilled from `README_TASK_REPORT.md` (2026-04-07) and commits `d92479a`, `20e0fa4`, `c6f23a6`; branch not merged to `main` yet |
+| shenbufan | prbs7 | digital-logic | `tasks/spec-to-va/voltage/digital-logic/prbs7` | `yes` | `pass` | `pass` | `yes` | `passed` | `behavioral-veriloga-eval/results/prbs7_day1` | `origin/pr-2` | backfilled from `README_TASK_REPORT.md` (2026-04-07) and commit `9608bfd`; branch not merged to `main` yet |
+| shenbufan | therm2bin | digital-logic | `tasks/spec-to-va/voltage/digital-logic/therm2bin` | `yes` | `pass` | `pass` | `yes` | `passed` | `behavioral-veriloga-eval/results/therm2bin_day1` | `origin/pr-2` | backfilled from `README_TASK_REPORT.md` (2026-04-07) and commits `642b6e2`, `20e0fa4`, `c6f23a6`; branch not merged to `main` yet |
+| shenbufan | bbpd | pll-clock | `tasks/spec-to-va/voltage/pll-clock/bbpd` | `yes` | `pass` | `pass` | `yes` | `passed` | `behavioral-veriloga-eval/results/bbpd_day1` | `origin/pr-2` | backfilled from `README_TASK_REPORT.md` (2026-04-07) and commit `aeb6f32`; branch not merged to `main` yet |
+| shenbufan | multimod_divider | pll-clock | `tasks/spec-to-va/voltage/pll-clock/multimod_divider` | `yes` | `pass` | `pass` | `yes` | `passed` | `behavioral-veriloga-eval/results/multimod_divider_day1` | `origin/pr-2` | backfilled from `README_TASK_REPORT.md` (2026-04-07) and commit `49349b6`; branch not merged to `main` yet |
 | liangyuxuan | sar_logic | adc-sar | `tasks/spec-to-va/voltage/adc-sar/sar_logic` | `no` | `[TODO]` | `[TODO]` | `no` | `pending` | `[TODO]` | `[TODO]` | needs gold .va + automated check |
 | liangyuxuan | sar_12bit | adc-sar | `tasks/spec-to-va/voltage/adc-sar/sar_12bit` | `no` | `[TODO]` | `[TODO]` | `no` | `pending` | `[TODO]` | `[TODO]` | needs gold .va + automated check |
 | liangyuxuan | d2b_4bit | adc-sar | `tasks/spec-to-va/voltage/adc-sar/d2b_4bit` | `no` | `[TODO]` | `[TODO]` | `no` | `pending` | `[TODO]` | `[TODO]` | needs gold .va + automated check |
@@ -141,8 +141,8 @@ Tracks AI-generated bug fixes evaluated against bugfix tasks.
 
 | owner | task_name | bug_type | task_path | gold_fix_exists | dut_compile | bug_fixed | verification_status | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| shenbufan | bad_bus_output_loop | wrong vector assignment `V(DOUT)<+` vs `V(DOUT[i])<+` | `tasks/bugfix/voltage/bad_bus_output_loop` | `no` | `[TODO]` | `[TODO]` | `pending` | needs gold `dut_fixed.va` |
-| shenbufan | missing_transition_outputs | output port missing `transition()` wrapper | `tasks/bugfix/voltage/missing_transition_outputs` | `no` | `[TODO]` | `[TODO]` | `pending` | needs gold `dut_fixed.va` |
+| shenbufan | bad_bus_output_loop | wrong vector assignment `V(DOUT)<+` vs `V(DOUT[i])<+` | `tasks/bugfix/voltage/bad_bus_output_loop` | `yes` | `[TODO]` | `[TODO]` | `pending` | commit `7d97305` added `gold/dut_fixed.va` + `gold/tb_bad_bus_output_loop.scs` + automated EVAS check; run evidence not backfilled yet |
+| shenbufan | missing_transition_outputs | output port missing `transition()` wrapper | `tasks/bugfix/voltage/missing_transition_outputs` | `yes` | `[TODO]` | `[TODO]` | `pending` | commit `7d97305` added `gold/dut_fixed.va` + `gold/tb_missing_transition_outputs.scs` + automated EVAS check; run evidence not backfilled yet |
 | team | mixed_domain_cdac_bug | mixed `I()<+` and voltage-domain constructs | `tasks/bugfix/voltage/mixed_domain_cdac_bug` | `no` | `[TODO]` | `[TODO]` | `pending` | needs gold `dut_fixed.va` |
 | team | spectre_port_discipline | `inout electrical A, B` sharing — Spectre rejects | `tasks/bugfix/voltage/spectre_port_discipline` | `no` | `[TODO]` | `[TODO]` | `pending` | needs gold `dut_fixed.va` |
 
