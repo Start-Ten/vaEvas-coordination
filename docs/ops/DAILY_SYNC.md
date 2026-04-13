@@ -52,6 +52,20 @@ git push origin main
 2. 是否已有 `kpi`
 3. 复杂任务是否已有 `plan`
 
+### Step 5: 收工前做证据回填（三件套）
+
+每天结束前，至少对当天推进的任务回填以下三项：
+
+1. `branch + commit`：当天新增或更新的关键提交
+2. `result_path`：可复核路径（例如 `results/...` 或 `testspace/...`）
+3. `table_row_update`：在 `coordination/docs/benchmark/BENCHMARK_RESULT_TABLE.md` 更新对应行
+
+如果三项不齐：
+
+1. 任务状态只记为 `in progress`
+2. 不进入“已完成”统计
+3. 次日优先补证据再开新任务
+
 ## 为什么这样做
 
 如果大家每天先同步顶层协作仓库，再进入代码仓库：

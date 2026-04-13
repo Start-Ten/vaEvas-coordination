@@ -23,6 +23,22 @@
 
 ---
 
+## 执行回填最小要求（三件套）
+
+每位同学每次声称“任务已推进”，都必须同步三项证据：
+
+1. `branch + commit`：明确写出分支名与至少一个可检索 commit
+2. `result_path`：给出可复核的结果路径（本地相对路径或仓库相对路径）
+3. `table_row_update`：在 `coordination/docs/benchmark/BENCHMARK_RESULT_TABLE.md` 中更新对应行
+
+判定规则：
+
+1. 三件套未齐，不计入“已完成”或“可验收”
+2. 仅有代码提交但未回填结果表，计入“进行中”
+3. 仅有结果截图但无 commit / path，计入“证据不足”
+
+---
+
 ## 0. benchmark 四个任务族说明
 
 vaEvas benchmark 分四个任务族（task families），测试 AI 模型的不同能力：
