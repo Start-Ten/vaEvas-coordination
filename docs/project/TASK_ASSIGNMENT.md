@@ -10,8 +10,8 @@
 
 | 状态 | 数量 | 说明 |
 |------|------|------|
-| 已验证通过 | 21 | EVAS + Spectre 双验证成功 |
-| Spectre兼容问题 | 1 | adpll_lock_smoke (vctrl_mon idtmod问题) |
+| 已验证通过 | 22 | EVAS + Spectre 双验证成功 (含本次修复2个) |
+| Spectre兼容问题 | 1 | adpll_lock_smoke (vctrl_mon idtmod问题,已记录) |
 
 ### spec-to-va 任务
 
@@ -123,14 +123,25 @@
 
 ## 本次会话完成的工作
 
-### 修复的4个失败任务
+### 修复的2个阻塞任务 (2026-04-17 深夜)
 
 | 任务 | 问题 | 修复方案 | 结果 |
 |------|------|----------|------|
-| xor_pd_smoke | delay参数错误(2.5ns→5ns) | 修正测试bench | max_nrmse=0.01 |
-| serializer_8b_smoke | 时序语义差异 | 添加load_pending标志 | max_nrmse=0.214 |
-| sar_adc_dac_weighted_8b_smoke | for循环兼容性+阈值 | 显式逐位操作+阈值调整 | max_nrmse=0.00056 |
-| adpll_lock_smoke | idtmod兼容性 | 记录为已知限制 | 功能正确,parity失败 |
+| `sar_adc_dac_weighted_8b_smoke` | Spectre unique_codes=32 < 阈值48 | fin 1MHz→100kHz, stop 5us→10us | PASS, max_nrmse=0.006 |
+| `serializer_8b_smoke` | behavior check采样时机+LOAD/CLK竞争 | LOAD width 15n→12.5n, check wait 1ns | PASS, max_nrmse=0.02 |
+
+### 根因分析
+
+**sar_adc**: 高频正弦(1MHz)+低采样率(50MHz)导致每周期样本少，跳过大量code区域
+
+**serializer**:
+1. transition()需要~100ps完成，检查函数采样过早
+2. LOAD fall与CLK rise在t=20ns同时发生(竞争条件)
+
+### 提交记录
+
+- `91eeecb` fix: serializer_8b_smoke dual-validation parity closure
+- `5dabc0d` fix: sar_adc_dac_weighted_8b Spectre coverage + serializer check delay
 
 ### 新验证的任务
 
