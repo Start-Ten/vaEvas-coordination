@@ -16,7 +16,7 @@
 
 1. 本地 `ssh` 可用
 2. 已配置 `~/.ssh/config` 主机别名
-3. bridge 仓库依赖已安装：`<repo>/sshConnect/virtuoso-bridge-lite`
+3. bridge 仓库依赖已安装：`<repo>/iccad/virtuoso-bridge-lite`
 
 最小检查：
 
@@ -32,7 +32,7 @@ ssh -o BatchMode=yes <target-host> 'echo batch_ok'
 优先使用项目脚本自动处理 tunnel + daemon：
 
 ```bash
-cd <repo>/sshConnect/virtuoso-bridge-lite
+cd <repo>/iccad/virtuoso-bridge-lite
 zsh ./start_thu_bridge.sh
 zsh ./status_thu_bridge.sh
 ```
@@ -61,7 +61,7 @@ ssh -N -L 5971:localhost:5971 <target-host>
 ## 4.2 启动 daemon（终端 B）
 
 ```bash
-cd <repo>/sshConnect/virtuoso-bridge-lite
+cd <repo>/iccad/virtuoso-bridge-lite
 source .venv/bin/activate
 virtuoso-bridge start
 ```
@@ -69,7 +69,7 @@ virtuoso-bridge start
 ## 4.3 检查 tunnel/daemon 匹配
 
 ```bash
-cd <repo>/sshConnect/virtuoso-bridge-lite
+cd <repo>/iccad/virtuoso-bridge-lite
 virtuoso-bridge status
 ```
 

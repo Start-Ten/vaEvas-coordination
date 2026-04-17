@@ -55,7 +55,7 @@ ssh <your-host-alias>
 
 本项目常用目录：
 
-1. ssh bridge：`<repo>/sshConnect/virtuoso-bridge-lite`
+1. ssh bridge：`<repo>/iccad/virtuoso-bridge-lite`
 2. 研发仓库：`<repo>/vaEvas`
 3. 协作仓库：`<repo>/vaEvas/coordination`
 
@@ -65,7 +65,7 @@ ssh <your-host-alias>
 应先确认：
 
 1. 服务器上的团队共享目录在哪里
-2. `vaEvas`、`behavioral-veriloga-eval`、`sshConnect/virtuoso-bridge-lite` 的实际路径分别是什么
+2. `vaEvas`、`behavioral-veriloga-eval`、`iccad/virtuoso-bridge-lite` 的实际路径分别是什么
 3. 你应该直接进入共享目录，还是先 clone 到自己的 home 目录
 
 常见误区不是 Cadence 没配好，而是已经连上机器了，但还不知道仓库究竟放在哪。
@@ -81,7 +81,7 @@ ssh <your-host-alias>
 补充外部参考（在完整项目目录可用）：
 
 1. `<repo>/sshConnect/Virtuoso桥接说明.md`
-2. `<repo>/sshConnect/virtuoso-bridge-lite/README.md`
+2. `<repo>/iccad/virtuoso-bridge-lite/README.md`
 
 ---
 
@@ -90,7 +90,7 @@ ssh <your-host-alias>
 ## 4.1 进入 bridge 目录
 
 ```bash
-cd <repo>/sshConnect/virtuoso-bridge-lite
+cd <repo>/iccad/virtuoso-bridge-lite
 ```
 
 ## 4.2 启动 bridge

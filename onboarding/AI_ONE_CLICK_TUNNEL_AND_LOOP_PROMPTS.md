@@ -26,12 +26,12 @@
    - ssh ${HOST} 'echo ok_target && hostname'
    - ssh -o BatchMode=yes ${HOST} 'echo batch_ok'
 2) 启动 bridge（优先脚本）：
-   - cd ${REPO}/sshConnect/virtuoso-bridge-lite
+   - cd ${REPO}/iccad/virtuoso-bridge-lite
    - zsh ./start_thu_bridge.sh
    - zsh ./status_thu_bridge.sh
 3) 若脚本失败，使用手动兜底：
    - 终端A: ssh -N -L 5971:localhost:5971 ${HOST}
-   - 终端B: cd ${REPO}/sshConnect/virtuoso-bridge-lite && source .venv/bin/activate && virtuoso-bridge start
+   - 终端B: cd ${REPO}/iccad/virtuoso-bridge-lite && source .venv/bin/activate && virtuoso-bridge start
    - 检查: virtuoso-bridge status
 4) 做最小功能烟测（python）：
    - from virtuoso_bridge import BridgeClient

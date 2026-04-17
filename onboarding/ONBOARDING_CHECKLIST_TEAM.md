@@ -42,7 +42,7 @@
 
 1. `vaEvas`
 2. `behavioral-veriloga-eval`
-3. `sshConnect/virtuoso-bridge-lite`
+3. `iccad/virtuoso-bridge-lite`
 
 如果环境已通但仓库未定位，直接参考：
 
@@ -92,7 +92,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
 
-cd <repo>/sshConnect/virtuoso-bridge-lite
+cd <repo>/iccad/virtuoso-bridge-lite
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
@@ -117,7 +117,7 @@ pip install -e .
 进入 bridge 目录（路径按你机器实际情况）：
 
 ```bash
-cd <repo>/sshConnect/virtuoso-bridge-lite
+cd <repo>/iccad/virtuoso-bridge-lite
 zsh ./start_thu_bridge.sh
 zsh ./status_thu_bridge.sh
 ```

@@ -32,7 +32,7 @@
 以下内容在只上传 coordination 时不会包含，请在团队执行前按需补充：
 
 1. 真实代码与脚本（EVAS / testspace / skills）
-2. `sshConnect/virtuoso-bridge-lite` 的运行文件和 `.env`
+2. `iccad/virtuoso-bridge-lite` 的运行文件和 `.env`
 3. 历史仿真输出（output 目录中的报告与波形）
 
 ---
