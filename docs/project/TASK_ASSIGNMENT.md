@@ -72,7 +72,7 @@ _这部分是根据结果表字段自动推导的启发式摘要，不再手工�
 | liangyuxuan | `pipeline_stage` | adc-sar | `feat/liangyuxuan-pr-1` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/pipeline_stage` |
 | liangyuxuan | `sar_12bit` | adc-sar | `feat/liangyuxuan-pr-1` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/sar_12bit` |
 | liangyuxuan | `sar_logic` | adc-sar | `feat/liangyuxuan-pr-1` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/sar_logic` |
-| liangyuxuan | `cdac_cal` | dac | `[TODO]` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/cdac_cal` |
+| liangyuxuan | `cdac_cal` | dac | `codex/upstream-complete-pr` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/cdac_cal` |
 | liangyuxuan | `segmented_dac` | dac | `feat/liangyuxuan-pr-1` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/segmented_dac` |
 | shenbufan | `clk_divider` | digital-logic | `origin/pr-2` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/clk_divider` |
 | shenbufan | `prbs7` | digital-logic | `origin/pr-2` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/prbs7` |
@@ -80,9 +80,9 @@ _这部分是根据结果表字段自动推导的启发式摘要，不再手工�
 | shenbufan | `bbpd` | pll-clock | `origin/pr-2` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/bbpd` |
 | shenbufan | `multimod_divider` | pll-clock | `origin/pr-2` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/multimod_divider` |
 | team | `sar_logic_10b` | adc-sar | `feat/liangyuxuan-pr-1` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/sar_logic_10b` |
-| team | `sc_integrator` | amplifier-filter | `[TODO]` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/sc_integrator` |
-| team | `bg_cal` | calibration | `[TODO]` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/bg_cal` |
-| team | `adpll_timer` | pll-clock | `[TODO]` | `behavioral-veriloga-eval/results/gold-suite-pll-2026-04-18/adpll_timer` |
-| team | `cppll_timer` | pll-clock | `[TODO]` | `behavioral-veriloga-eval/results/gold-suite-pll-2026-04-18/cppll_timer` |
-| team | `multitone` | signal-source | `[TODO]` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/multitone` |
-| team | `nrz_prbs` | signal-source | `[TODO]` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/nrz_prbs` |
+| team | `sc_integrator` | amplifier-filter | `codex/upstream-complete-pr` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/sc_integrator` |
+| team | `bg_cal` | calibration | `codex/upstream-complete-pr` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/bg_cal` |
+| team | `adpll_timer` | pll-clock | `codex/upstream-complete-pr` | `behavioral-veriloga-eval/results/gold-suite-pll-2026-04-18/adpll_timer` |
+| team | `cppll_timer` | pll-clock | `codex/upstream-complete-pr` | `behavioral-veriloga-eval/results/gold-suite-pll-2026-04-18/cppll_timer` |
+| team | `multitone` | signal-source | `codex/upstream-complete-pr` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/multitone` |
+| team | `nrz_prbs` | signal-source | `codex/upstream-complete-pr` | `behavioral-veriloga-eval/results/gold-dual-suite-non-e2e-refresh-2026-04-18/nrz_prbs` |
