@@ -1,0 +1,23 @@
+name: Task Assignment Sync Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  sync-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify generated task assignment is up to date
+        run: python scripts/sync_task_assignment.py --check

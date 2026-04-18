@@ -52,19 +52,28 @@ git push origin main
 2. 是否已有 `kpi`
 3. 复杂任务是否已有 `plan`
 
-### Step 5: 收工前做证据回填（三件套）
+### Step 5: 收工前做证据回填（四件套）
 
-每天结束前，至少对当天推进的任务回填以下三项：
+每天结束前，至少对当天推进的任务回填以下四项：
 
 1. `branch + commit`：当天新增或更新的关键提交
 2. `result_path`：可复核路径（例如 `results/...` 或 `testspace/...`）
 3. `table_row_update`：在 `coordination/docs/benchmark/BENCHMARK_RESULT_TABLE.md` 更新对应行
+4. `task_assignment_sync`：运行 `python coordination/scripts/sync_task_assignment.py` 刷新 `coordination/docs/project/TASK_ASSIGNMENT.md`
 
-如果三项不齐：
+如果四项不齐：
 
 1. 任务状态只记为 `in progress`
 2. 不进入“已完成”统计
 3. 次日优先补证据再开新任务
+
+建议在收工前再跑一次：
+
+```bash
+python coordination/scripts/sync_task_assignment.py --check
+```
+
+这样可以尽早发现 `TASK_ASSIGNMENT.md` 是否仍然滞后于结果表。
 
 ## 为什么这样做
 

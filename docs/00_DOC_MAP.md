@@ -6,8 +6,9 @@
 
 1. `../README.md`
 2. `./project/PROJECT_OVERVIEW.md`
-3. `./project/REPOSITORIES.md`
-4. `../status/2026-04-12_repo-visibility-note.md`
+3. `./project/REPO_ADVANCEMENT_AND_RESEARCH_JUDGMENT_PLAN.md`
+4. `./project/REPOSITORIES.md`
+5. `../status/2026-04-12_repo-visibility-note.md`
 
 ## 2. 第二层：新人执行入口
 
