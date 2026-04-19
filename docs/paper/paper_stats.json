@@ -25,17 +25,18 @@
     "comms": 1,
     "comparator": 6,
     "dac": 1,
-    "data-converter": 5,
+    "data-converter": 6,
     "digital-logic": 7,
     "end-to-end-task": 1,
     "measurement": 2,
-    "phase-detector": 5,
-    "pll-closed-loop": 7,
+    "phase-detector": 6,
+    "pll": 1,
+    "pll-closed-loop": 8,
     "sample-hold": 3,
     "stimulus": 2,
     "testbench": 1
   },
-  "dual_validated_total": 44,
+  "dual_validated_total": 48,
   "families": {
     "bugfix": {
       "dual": 7,
@@ -43,7 +44,7 @@
       "total": 8
     },
     "end-to-end": {
-      "dual": 30,
+      "dual": 32,
       "passed": 39,
       "total": 39
     },
@@ -53,7 +54,7 @@
       "total": 18
     },
     "tb-generation": {
-      "dual": 7,
+      "dual": 9,
       "passed": 11,
       "total": 11
     }

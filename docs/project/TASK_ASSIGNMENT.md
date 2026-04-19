@@ -17,7 +17,7 @@ python coordination/scripts/sync_task_assignment.py --check
 ### benchmark / closed-loop 行
 | 状态 | 数量 | 说明 |
 | --- | --- | --- |
-| 已双验证通过 | 30 | verification_status=passed 且 parity_status=dual-validated |
+| 已双验证通过 | 32 | verification_status=passed 且 parity_status=dual-validated |
 | 特殊跟踪例外 | 0 | passed 但 parity_status 不是 dual-validated |
 | 未完成闭环 | 0 | verification_status 仍非 passed |
 
