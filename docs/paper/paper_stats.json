@@ -3,18 +3,18 @@
     "adc-sar": 6,
     "amplifier-filter": 1,
     "calibration": 3,
-    "comms": 1,
+    "comms": 2,
     "comparator": 8,
     "dac": 3,
     "data-converter": 8,
-    "digital-logic": 11,
+    "digital-logic": 12,
     "end-to-end-task": 1,
     "measurement": 2,
-    "phase-detector": 6,
+    "phase-detector": 7,
     "pll": 2,
     "pll-clock": 4,
     "pll-closed-loop": 8,
-    "sample-hold": 3,
+    "sample-hold": 4,
     "signal-source": 2,
     "stimulus": 2,
     "testbench": 1
@@ -44,8 +44,8 @@
     },
     "end-to-end": {
       "dual": 30,
-      "passed": 36,
-      "total": 36
+      "passed": 39,
+      "total": 39
     },
     "spec-to-va": {
       "dual": 0,
@@ -54,10 +54,10 @@
     },
     "tb-generation": {
       "dual": 7,
-      "passed": 10,
-      "total": 10
+      "passed": 11,
+      "total": 11
     }
   },
   "generated_at": "2026-04-19",
-  "total_tasks": 72
+  "total_tasks": 76
 }
