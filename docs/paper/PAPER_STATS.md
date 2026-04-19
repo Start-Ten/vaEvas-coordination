@@ -3,11 +3,11 @@
 ## Family Distribution
 |Task Family|# Tasks|EVAS Passed|Dual-Validated|
 |---|---|---|---|
-|end-to-end|35|35 (100.0%)|30|
+|end-to-end|36|36 (100.0%)|30|
 |spec-to-va|18|18 (100.0%)|0|
 |bugfix|8|8 (100.0%)|7|
 |tb-generation|10|10 (100.0%)|7|
-|**Total**|**71**|**71 (100.0%)**|**44**|
+|**Total**|**72**|**72 (100.0%)**|**44**|
 
 ## Category Distribution
 |Category|# Tasks|Dual-Validated|
@@ -18,7 +18,7 @@
 |comms|1|1|
 |comparator|8|6|
 |dac|3|1|
-|data-converter|7|5|
+|data-converter|8|5|
 |digital-logic|11|7|
 |end-to-end-task|1|1|
 |measurement|2|2|
