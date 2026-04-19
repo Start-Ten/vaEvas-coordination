@@ -1,0 +1,63 @@
+{
+  "categories": {
+    "adc-sar": 6,
+    "amplifier-filter": 1,
+    "calibration": 3,
+    "comms": 1,
+    "comparator": 8,
+    "dac": 3,
+    "data-converter": 7,
+    "digital-logic": 11,
+    "end-to-end-task": 1,
+    "measurement": 2,
+    "phase-detector": 6,
+    "pll": 2,
+    "pll-clock": 4,
+    "pll-closed-loop": 8,
+    "sample-hold": 3,
+    "signal-source": 2,
+    "stimulus": 2,
+    "testbench": 1
+  },
+  "dual_validated_by_category": {
+    "adc-sar": 1,
+    "calibration": 2,
+    "comms": 1,
+    "comparator": 6,
+    "dac": 1,
+    "data-converter": 5,
+    "digital-logic": 7,
+    "end-to-end-task": 1,
+    "measurement": 2,
+    "phase-detector": 5,
+    "pll-closed-loop": 7,
+    "sample-hold": 3,
+    "stimulus": 2,
+    "testbench": 1
+  },
+  "dual_validated_total": 44,
+  "families": {
+    "bugfix": {
+      "dual": 7,
+      "passed": 8,
+      "total": 8
+    },
+    "end-to-end": {
+      "dual": 30,
+      "passed": 35,
+      "total": 35
+    },
+    "spec-to-va": {
+      "dual": 0,
+      "passed": 18,
+      "total": 18
+    },
+    "tb-generation": {
+      "dual": 7,
+      "passed": 10,
+      "total": 10
+    }
+  },
+  "generated_at": "2026-04-19",
+  "total_tasks": 71
+}
