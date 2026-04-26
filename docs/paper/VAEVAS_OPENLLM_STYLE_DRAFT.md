@@ -54,6 +54,19 @@ For this reason, `vaEvas` evaluates generated models through execution. A candid
 
 EVAS is not used as a decorative replacement for Spectre. Its value is that it can move simulation into the repair loop. Spectre/Virtuoso remains the industrial acceptance reference, but EVAS supplies high-throughput feedback during optimization.
 
+EVAS is fast because it solves a narrower problem than Spectre/Virtuoso. Spectre/Virtuoso is a SPICE-class simulator: it must assemble and solve circuit equations, typically through modified nodal analysis (MNA), current contributions, KCL/KVL constraints, nonlinear device equations, and continuous-time error control. EVAS deliberately targets an event-driven voltage-domain subset of behavioral Verilog-A. It supports constructs such as `V(node) <+ ...`, `V(a,b) <+ ...`, `cross()`, `above()`, `timer()`, and `transition()`, and evaluates behavioral state over voltage traces and event breakpoints rather than solving a full electrical network.
+
+This speed therefore comes with an explicit trade-off. EVAS is not a general SPICE replacement. It does not claim support for arbitrary current-domain contributions, KCL/KVL device networks, `ddt()`/`idt()`/Laplace continuous-time operators, spectral noise functions, or behavior whose correctness depends on physical loading and current redistribution. In short, EVAS sacrifices full circuit-solver generality in exchange for fast execution on pure voltage-domain behavioral models.
+
+This trade-off matches our benchmark. Most LLM-generated Verilog-A tasks in this work ask for functional behavior: code coverage, divider cadence, PFD pulse timing, PLL lock behavior, output activity, observable CSV traces, and testbench compatibility. For these tasks, the primary question is usually not whether a realistic current-domain network is solved, but whether the behavioral model produces the expected voltage-domain signals under a known stimulus. EVAS is therefore used as the fast inner-loop proxy, while Spectre/Virtuoso remains the final acceptance simulator for key results.
+
+| EVAS design choice | Speed benefit | Cost / boundary |
+|---|---|---|
+| Event-driven `cross/timer/above` execution | Updates behavior around timesteps and event breakpoints instead of solving a full circuit at every point. | Not equivalent to Spectre's full LTE-controlled continuous-time solver. |
+| Voltage-domain `V() <+` behavioral contributions | Reads and updates voltage states directly, avoiding MNA matrix solves. | Does not support general `I() <+` current contributions or KCL network solving. |
+| Behavioral `transition/slew/last_crossing` approximations | Produces observable waveforms and timing features cheaply. | Does not claim exact semantics for all analog operators. |
+| CSV/checker-oriented benchmark output | Enables large-scale automated scoring and LLM repair. | Requires explicit observable contracts and save policies. |
+
 The intended evidence chain is:
 
 1. show that EVAS and Spectre/Virtuoso agree on behavioral outcomes for representative benchmark tasks;
@@ -178,6 +191,15 @@ Only templates that rescue multiple tasks under signature-gated triggering shoul
 ### 5.1 Models
 
 The current main snapshot uses Kimi as the primary model. Qwen is used as a secondary cross-model comparison. Other model attempts are historical diagnostics and should not be part of the main narrative unless rerun under the current system.
+
+A model-comparison table should be reserved in the final paper to show whether the framework generalizes beyond a single LLM. The goal is not merely to rank models, but to compare how different models fail, how much they benefit from EVAS feedback, and whether their EVAS-side gains transfer to Spectre/Virtuoso.
+
+| Model | Condition A: raw-prompt EVAS | Best F/H EVAS repair | Spectre/Virtuoso acceptance | Dominant failure modes | Notes |
+|---|---:|---:|---:|---|---|
+| Kimi | 18/92 | F: 58/92; H: 59/92 | TBD | Behavior failures dominate after repair. | Current primary snapshot. |
+| Qwen | 25/92 | TBD | TBD | TBD | Needs refresh under the current system. |
+| GPT-5.5/API model | TBD | TBD | TBD | TBD | Requires a reproducible API entry. |
+| Other models | TBD | TBD | TBD | TBD | Include only after rerunning with the current system. |
 
 ### 5.2 Metrics
 
@@ -404,4 +426,3 @@ flowchart TB
 ## 12. Conclusion
 
 This draft argues that the central bottleneck in LLM-generated Verilog-A is not only model capability, but the lack of fast executable feedback. EVAS addresses this bottleneck by making simulation cheap enough to become the inner loop of repair. The current 92-task results show that EVAS-guided repair substantially improves over raw prompting, especially when moving from no feedback to single-round and multi-round feedback. The next step is to complete the Spectre/Virtuoso consistency and acceptance tables, then refine signature-guided repair into a robust, non-overfit method.
-
