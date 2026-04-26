@@ -171,7 +171,7 @@ This directly supports the paper claim: "our framework enables AI-assisted bench
 
 | phase | who |
 |---|---|
-| Phase 1 gold answers + parity | shenbufan + liangyuxuan (see WORK_ASSIGNMENT.md) |
+| Phase 1 gold answers + parity | shenbufan + liangyuxuan (historical assignment archived in `../archive/2026-04-pre-paper-pivot/project/WORK_ASSIGNMENT.md`) |
 | Phase 1 new example variants | automated (Claude Code) |
 | Phase 2 new circuit categories | Claude Code + team review |
 | Phase 2–3 parity validation | students |
