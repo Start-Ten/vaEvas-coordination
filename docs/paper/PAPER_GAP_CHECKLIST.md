@@ -9,9 +9,11 @@ Scope:
 3. what must be done before the draft becomes paper-grade
 4. who should help move which part forward
 
-Primary draft:
+Primary drafts:
 
 1. [VAEVAS_OPENLLM_STYLE_DRAFT.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/paper/VAEVAS_OPENLLM_STYLE_DRAFT.md)
+2. [VAEVAS_PAPER_DRAFT_ZH.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/paper/VAEVAS_PAPER_DRAFT_ZH.md)
+3. [VAEVAS_FIGURE_PLAN.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/paper/VAEVAS_FIGURE_PLAN.md)
 
 Supporting table:
 
@@ -183,7 +185,7 @@ This is not required for the current paper skeleton, but would make it much clos
 
 Current strongest claim:
 
-`vaEvas is an execution-first, simulator-aware framework for Verilog-A benchmark construction and behavioral validation.`
+`EVAS is behaviorally aligned with Spectre/Virtuoso while being fast enough to serve as the inner loop of LLM Verilog-A generate-simulate-repair optimization.`
 
 Current weaker claim:
 
@@ -191,9 +193,9 @@ Current weaker claim:
 
 Recommended paper angle:
 
-1. framework paper
-2. methodology paper
-3. early benchmark paper
+1. EVAS-guided closed-loop repair paper
+2. executable Verilog-A generation evaluation paper
+3. benchmark/methodology paper
 
 Not recommended yet:
 

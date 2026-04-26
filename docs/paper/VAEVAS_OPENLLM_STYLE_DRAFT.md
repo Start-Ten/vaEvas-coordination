@@ -1,466 +1,407 @@
-# vaEvas: An EVAS-First Benchmarking and Validation Framework for Verilog-A Behavioral Model Generation
+# vaEvas: Fast EVAS-Guided Closed-Loop Repair for LLM-Generated Verilog-A Behavioral Models
 
-## Status
+Status: working English manuscript draft, refreshed on 2026-04-26.
 
-This is a working draft written in an `OpenLLM-RTL`-style structure.
+This draft supersedes the earlier framework-only draft. The current paper story is not only that `vaEvas` builds a benchmark, but that EVAS enables a fast executable feedback loop for improving LLM-generated Verilog-A. Empty result cells are intentional and should be filled after the next Spectre/Virtuoso validation pass.
 
-Purpose:
+Chinese counterpart: [VAEVAS_PAPER_DRAFT_ZH.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/paper/VAEVAS_PAPER_DRAFT_ZH.md)
 
-1. summarize what `vaEvas` has already built
-2. organize the work into a paper-like narrative
-3. leave explicit blanks for the next stage of work
-
-This is not the final paper text.
-
-Execution checklist for closing the paper gaps:
-
-1. [PAPER_GAP_CHECKLIST.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/paper/PAPER_GAP_CHECKLIST.md)
+Supporting snapshot: [LATEST_SYSTEM_SNAPSHOT_2026-04-26.md](/Users/bucketsran/Documents/TsingProject/vaEvas/behavioral-veriloga-eval/docs/project/LATEST_SYSTEM_SNAPSHOT_2026-04-26.md)
 
 ---
 
-## 1. Abstract
+## Abstract
 
-Large language models have recently shown strong performance on digital HDL generation, but analogous evaluation infrastructure for Verilog-A behavioral modeling remains limited. We present `vaEvas`, an EVAS-first framework for Verilog-A generation, execution, cross-simulator validation, and benchmark construction. The framework links four layers: simulator capability development in `EVAS`, benchmark task authoring in `behavioral-veriloga-eval`, modeling guidance in `veriloga-skills`, and project-level workflow coordination in `coordination`. Instead of treating text-only code generation as the endpoint, `vaEvas` emphasizes executable evaluation: generated models must compile, run, and satisfy behavior checks under EVAS, and closed-loop cases can be further compared against Virtuoso/Spectre under identical stimuli. We describe the current workflow from `example -> closed loop verification -> benchmark seed -> task PR`, report initial closed-loop case studies including `CPPLL` and `ADPLL`, and show how parity-driven debugging led to concrete EVAS semantic fixes such as `while` support and improved timer scheduling behavior. We also identify the missing pieces required to turn the current system into a mature community benchmark, including dataset scaling, unified scoring, baselines, and broader task coverage.
+Large language models can produce plausible Verilog-A code, but direct text generation is unreliable for analog and mixed-signal behavioral models: candidates may fail to compile, instantiate incompatible testbenches, or simulate but violate the intended behavior. Industrial simulators such as Spectre/Virtuoso can validate these failures, but their runtime cost makes them unsuitable as the inner loop of repeated LLM repair. We present `vaEvas`, an EVAS-guided framework for executable evaluation and closed-loop repair of LLM-generated Verilog-A behavioral models. The key observation is that EVAS can provide behaviorally consistent results with Spectre/Virtuoso while running fast enough to support high-throughput generate-simulate-repair iterations. In `vaEvas`, each candidate is compiled, simulated, checked against task-specific behavioral contracts, and repaired using structured EVAS feedback. On a 92-task benchmark, a raw Kimi baseline solves 18 tasks, while multi-round EVAS repair solves 58 tasks; a signature-guided repair prototype further reaches 59 tasks under the current formal snapshot. These EVAS-side results are complemented by a planned Spectre/Virtuoso acceptance table to verify that the gains transfer to the industrial simulator. Our results suggest that fast executable feedback is a necessary ingredient for reliable LLM-based Verilog-A generation.
 
-## 2. Introduction
+## 1. Introduction
 
-Digital HDL evaluation has recently benefited from benchmarks such as `VerilogEval` and larger RTL-oriented datasets such as `OpenLLM-RTL`. In contrast, Verilog-A remains under-served despite its practical importance in analog and mixed-signal behavioral modeling. The gap is not only a data gap but also an execution gap: useful Verilog-A evaluation must handle simulator compatibility, event semantics, closed-loop dynamics, and benchmark rules that are grounded in actual model behavior rather than text similarity.
+Verilog-A behavioral models are central to analog and mixed-signal design flows. They allow engineers to model PLLs, data converters, calibration loops, phase detectors, signal sources, and mixed-signal control logic at a level that is executable in circuit simulators. Recent LLMs can generate code that looks syntactically plausible, but Verilog-A correctness is not a text property. A model is useful only if it compiles, interacts with the intended testbench, produces observable simulation traces, and satisfies the behavior specified by the task.
 
-Useful external references currently collected for positioning:
+This makes Verilog-A generation harder to evaluate than ordinary code generation. A candidate may pass superficial inspection while hiding event-scheduling bugs, off-by-one cadence errors, degenerate waveforms, missing output activity, or simulator-incompatible constructs. A benchmark therefore needs executable evidence: compile results, simulation traces, behavioral checks, and simulator consistency.
 
-1. [referencepaper/README.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/referencepaper/README.md)
+The straightforward answer is to run every candidate in Spectre/Virtuoso. However, this is expensive when the goal is not one final validation but repeated repair. LLM repair only becomes practical when the simulator can be called many times per task. This is the role of EVAS in our work. We use EVAS as a fast behavioral feedback engine: it compiles and simulates generated Verilog-A, exposes errors through CSV traces and checkers, and returns structured failure signatures that can drive subsequent repair.
 
-`vaEvas` is motivated by this gap. Our goal is to build an end-to-end loop for Verilog-A:
+Our central thesis is:
 
-1. generate or author EVAS-compatible Verilog-A
-2. execute it under EVAS
-3. validate behavior with explicit checks
-4. use Spectre as a cross-simulator oracle when needed
-5. convert stable examples into reusable benchmarks
+> EVAS makes executable LLM repair practical because it is behaviorally aligned with Spectre/Virtuoso while being fast enough to serve as the inner loop of generate-simulate-repair optimization.
 
-The current system is intentionally EVAS-first. This means:
+This paper makes four contributions.
 
-1. EVAS execution is the primary gate for benchmark inclusion
-2. Spectre comparison is used for parity validation, especially on closed-loop cases
-3. benchmark value comes from executable behavior, not text resemblance alone
+1. We introduce a 92-task executable Verilog-A generation benchmark with task prompts, generated artifacts, testbenches, and three-layer scoring: DUT compile, testbench compile, and simulation correctness.
+2. We propose an EVAS-guided closed-loop repair workflow that turns simulator feedback into repair signals for LLM-generated Verilog-A.
+3. We evaluate a staged condition matrix showing that EVAS feedback substantially improves over raw prompting, from 18/92 raw-pass tasks to 58/92 with multi-round EVAS repair in the current Kimi snapshot.
+4. We develop signature-guided repair and validated fast checkers as a path toward higher-quality feedback, while keeping Spectre/Virtuoso acceptance as the final validation target.
 
-## 3. Problem Statement
+The current draft reports EVAS-side results first because they are the basis of rapid iteration. The final paper should also include Spectre/Virtuoso acceptance for the main conditions and an EVAS-vs-Spectre behavior-consistency table.
 
-We study the following practical problem:
+## 2. Background and Motivation
 
-`How can we evaluate and improve Verilog-A model generation in a way that is executable, simulator-aware, and reusable as a benchmark?`
+### 2.1 Why Verilog-A Generation Needs Executable Evaluation
 
-This differs from common code-generation benchmarks in three ways:
+In RTL benchmarks such as VerilogEval, VGen, RTLLM, and OpenLLM-RTL, generated Verilog is evaluated by syntax checks and testbench execution. This basic lesson directly applies to Verilog-A: a natural-language prompt and a generated file are not enough. A Verilog-A task must define what it means to observe behavior.
 
-1. Verilog-A correctness is often behavioral rather than purely syntactic
-2. simulator semantics can materially affect observed behavior
-3. many valuable tasks are closed-loop and require waveform- or lock-based checks
+Verilog-A adds several complications beyond digital RTL:
 
-Accordingly, `vaEvas` treats a task as solved only when it meets staged runtime criteria such as:
+1. event timing and analog transitions can affect correctness;
+2. save policies and observable signals determine whether a checker can read the result;
+3. simulator compatibility matters because Verilog-A constructs are not always interpreted identically;
+4. many tasks involve behavioral dynamics such as lock, reacquisition, sampling, quantization, and cadence.
 
-1. DUT compile success
-2. testbench compile success
-3. transient output generation
-4. task-specific behavior checks
-5. parity evidence when the case is a closed-loop benchmark seed
+For this reason, `vaEvas` evaluates generated models through execution. A candidate is only counted as successful when it compiles, runs, and satisfies the behavioral checker for the task.
 
-## 4. System Overview
+### 2.2 EVAS as a Fast Behavioral Feedback Engine
 
-The current `vaEvas` stack has four repositories:
+EVAS is not used as a decorative replacement for Spectre. Its value is that it can move simulation into the repair loop. Spectre/Virtuoso remains the industrial acceptance reference, but EVAS supplies high-throughput feedback during optimization.
 
-1. `EVAS`
-   simulator semantics, parser/runtime support, tests, example execution
-2. `behavioral-veriloga-eval`
-   benchmark tasks, prompts, metadata, checks, runners, reports
-3. `veriloga-skills`
-   generation guidance, domain routing, EVAS compatibility policy, modeling patterns
-4. `coordination`
-   workflow definition, onboarding, benchmark conversion process, documentation
+The intended evidence chain is:
 
-Together, they form a loop:
+1. show that EVAS and Spectre/Virtuoso agree on behavioral outcomes for representative benchmark tasks;
+2. show that EVAS is substantially faster than Spectre/Virtuoso on the same stimuli;
+3. use EVAS to run many repair candidates and iterations;
+4. confirm the key improvements in Spectre/Virtuoso.
 
-`model/task idea -> EVAS execution -> behavior validation -> parity debugging -> benchmark formalization -> PR-based integration`
+This distinction matters. If EVAS were merely faster but not behaviorally aligned, its feedback would not be trustworthy. If EVAS were aligned but not faster, it would not enable high-frequency repair. The contribution requires both properties.
 
-## 5. Benchmark Philosophy
+### 2.3 Relation to Assertion-Based Verification
 
-The benchmark philosophy in `vaEvas` is execution-first.
+OpenLLM-RTL and related work show that verification quality can matter more than raw data volume. Their assertion-based filtering strategy uses automatically generated assertions and formal verification to select higher-quality RTL training samples. Our setting is different because we do not train a new model; instead, we use executable EVAS feedback at inference and repair time.
 
-### 5.1 Core principles
+The shared principle is that the model needs a strong verifier. In our case, the verifier is not only a pass/fail oracle. It also produces structured failure signatures such as missing CSV outputs, code coverage failures, counter cadence mismatches, edge-window mismatches, no-overlap failures, or PLL lock failures. These signatures are the bridge between simulation and repair.
 
-1. do not score a task only by code appearance
-2. require runnable evidence wherever possible
-3. keep benchmark rules interpretable
-4. use parity checks for high-value closed-loop tasks
-5. preserve failure attribution so simulator issues and model issues are not mixed together
+## 3. Benchmark and Task Contract
 
-### 5.2 Example-to-benchmark conversion
+### 3.1 Task Structure
 
-A case is not promoted by copying files alone. It must pass the following workflow:
+Each benchmark task contains:
 
-1. select an example with real modeling meaning
-2. run EVAS successfully
-3. perform EVAS + Spectre comparison when the case is closed-loop or semantically sensitive
-4. define benchmark value in one sentence
-5. formalize `prompt.md`, `meta.json`, and `checks.yaml`
-6. implement runner checks
-7. replay validated outputs
-8. submit a dedicated PR
+1. a natural-language prompt describing the target Verilog-A behavior;
+2. generated DUT and testbench artifacts;
+3. metadata describing family, category, and expected files;
+4. EVAS runner configuration;
+5. task-specific behavioral checks.
 
-This workflow is already documented and used inside the team.
+The benchmark covers four families:
 
-## 6. Task Taxonomy
+| Family | Role |
+|---|---|
+| End-to-end | Generate a full Verilog-A DUT and testbench for a behavioral task. |
+| Spec-to-VA | Generate Verilog-A from a specification-like description. |
+| Bugfix | Repair a flawed Verilog-A artifact. |
+| TB generation | Generate or repair a testbench/harness. |
 
-At the moment, `vaEvas` covers or is beginning to cover the following task types:
+The current formal matrix uses 92 tasks. Earlier paper stats recorded 76 tasks and should be treated as historical unless refreshed.
 
-1. simple voltage-domain executable smoke tasks
-2. digital-style control/stimulus blocks written in Verilog-A
-3. data-converter and calibration-flavored examples
-4. closed-loop clocking and PLL-style behavioral models
+### 3.2 Scoring
 
-Current concrete seed cases include:
+Each task is scored through three primary gates:
 
-1. `CPPLL timer` closed-loop case
-2. `CPPLL parameter-shift` variant
-3. `ADPLL timer` closed-loop case
-4. `ADPLL idtmod` compatibility case
-5. `adpll_lock_smoke` as a formalized end-to-end benchmark task
+1. `dut_compile`: whether the generated DUT compiles;
+2. `tb_compile`: whether the generated testbench/harness compiles and runs;
+3. `sim_correct`: whether the resulting EVAS simulation satisfies the task-specific checker.
 
-### Blank: full benchmark inventory
+The final `Pass@1` number requires all required gates to pass for the task. Failures are attributed into categories such as DUT compile failure, testbench compile failure, simulation correctness failure, timeout, missing observable CSV, or unsupported checker coverage.
 
-`[TODO]`
+### 3.3 Public Contract and Non-Leakage
 
-Add a complete table of:
+The task prompt must expose the behavior required to make the task well-defined, but it should not reveal the gold implementation. This balance mirrors the concern raised by OpenLLM-RTL: if the description is too vague, the benchmark tests ambiguity rather than generation capability; if it is too detailed, generation becomes code translation.
 
-1. current tasks in `behavioral-veriloga-eval`
-2. candidate examples not yet promoted
-3. per-task status: smoke, benchmark seed, or formal benchmark
+Our contract policy is:
 
-## 7. Evaluation Pipeline
+1. public prompts should include required interfaces, observable outputs, and essential behavior;
+2. prompts should not include gold code structure or task-specific repair templates;
+3. repair-time feedback may include generalized circuit principles and failure signatures;
+4. signature-guided templates must be triggered by failure evidence, not by task name.
 
-The current evaluation pipeline can be summarized as follows.
+## 4. Method: EVAS-Guided Closed-Loop Repair
 
-### 7.1 Generation or authoring stage
+### 4.1 Overall Loop
 
-The input may be:
+The method is a repeated executable repair loop:
 
-1. an existing example
-2. a generated Verilog-A candidate
-3. a manually-authored reference model
+```text
+Prompt -> LLM generation -> EVAS compile/simulate -> checker/assertion
+       -> structured failure signature -> repair proposal -> EVAS recheck
+       -> select best candidate -> optional Spectre/Virtuoso acceptance
+```
 
-### 7.2 EVAS execution stage
+This loop differs from static prompt engineering. It uses actual execution results to decide what to repair. It also differs from random retry: every additional attempt is conditioned on simulator evidence.
 
-The first hard gate is EVAS execution:
+### 4.2 Feedback Types
 
-1. parser/compiler acceptance
-2. DUT/testbench compilation
-3. transient result generation
-4. non-degenerate output behavior
+EVAS feedback is organized into several layers.
 
-### 7.3 Behavior scoring stage
+| Feedback layer | Example signal | Repair value |
+|---|---|---|
+| Syntax/compatibility | unsupported construct, compile error | Forces the model away from invalid Verilog-A patterns. |
+| Harness/observable | missing `tran.csv`, missing saved signal, no edges | Localizes whether the issue is DUT, TB, or save policy. |
+| Behavioral checker | code coverage, cadence mismatch, lock failure | Indicates which functional property is violated. |
+| Signature-guided repair | `interval_hist`, `only_N_codes`, `not_enough_edges` | Maps repeated failure patterns to reusable repair families. |
 
-Task-specific checks are implemented in the benchmark runner.
+### 4.3 Conditions
 
-Examples:
+The main story can be expressed with four conditions:
 
-1. late-window clock frequency alignment
-2. lock assertion visibility
-3. waveform-based or logic-style output checks
+| Condition | Description | Question answered |
+|---|---|---|
+| A | Raw prompt generation | How strong is the LLM without executable feedback? |
+| D | Single-round EVAS repair | Does one simulation-feedback round help? |
+| F | Multi-round EVAS repair | Does EVAS speed enable better multi-round optimization? |
+| H | Signature-guided EVAS repair | Does higher-quality structured feedback improve repair? |
 
-### 7.4 Cross-simulator parity stage
+Additional controls should be reported separately rather than bloating the main table:
 
-For closed-loop cases, EVAS results are compared with Spectre using identical stimuli.
+| Control | Purpose |
+|---|---|
+| Random retry with same LLM budget | Shows whether gains come from feedback rather than more samples. |
+| Static skill-only or checker-transparent prompt | Tests whether static knowledge alone can replace EVAS feedback. |
+| H template ablation | Shows that H does not rely on task-name overfitting. |
 
-Current parity metrics include:
+### 4.4 Signature-Guided Repair
 
-1. `ppm_cross_delta`
-2. `rmse_vctrl_v`
-3. `rmse_fb_v`
-4. `evas_fb_hz`
-5. `spectre_fb_hz`
-6. `lock_time_delta_s`
+The H condition is not intended to hard-code individual benchmark answers. Instead, it uses reusable failure mechanisms:
 
-### 7.5 Failure-attribution stage
+| Template family | Trigger evidence | Intended repair scope |
+|---|---|---|
+| Counter cadence/off-by-one | interval or count mismatch | Dividers, timers, programmable cadence. |
+| Sampled latch/reset priority | sample mismatch or reset-edge mismatch | DFF, sample-hold, edge-triggered blocks. |
+| Quantizer/code coverage | missing codes or reversals | ADC/DAC quantizers. |
+| One-hot/thermometer/no-overlap | overlap, missing selection, wrap failure | DWA and thermometer logic. |
+| Frame/sequence alignment | frame mismatch, sequence mismatch | Serializers, PRBS, LFSR. |
+| PLL/PFD timing window | lock, pulse-width, phase-window failure | PLL and phase-detector tasks. |
+| Multi-module interface sanity | missing CSV, undriven submodule output | Multi-module artifacts and harness mismatch. |
 
-When mismatch appears, the workflow explicitly prefers:
+Only templates that rescue multiple tasks under signature-gated triggering should be promoted into the formal method. Single-task rescues should be recorded as exploratory evidence.
 
-1. checking EVAS semantics first
-2. avoiding premature benchmark rule changes
-3. escalating to model-code review only after repeated EVAS-side attempts fail
+## 5. Experimental Setup
 
-## 8. Current Technical Contributions
+### 5.1 Models
 
-The current project already contains several concrete technical contributions.
+The current main snapshot uses Kimi as the primary model. Qwen is used as a secondary cross-model comparison. Other model attempts are historical diagnostics and should not be part of the main narrative unless rerun under the current system.
 
-### 8.1 EVAS semantic repair through parity debugging
+### 5.2 Metrics
 
-Closed-loop verification exposed an EVAS mismatch that looked like a timer inconsistency with Virtuoso/Spectre. The actual root cause was deeper:
+Primary metrics:
 
-1. missing or incorrect `while` support affected phase-wrap logic
-2. timer scheduling behavior needed more reliable absolute-time handling
+1. `Pass@1`;
+2. pass count out of 92 tasks;
+3. family-level pass rate;
+4. failure taxonomy;
+5. Spectre/Virtuoso acceptance for selected final conditions.
 
-This led to:
+Secondary metrics:
 
-1. frontend/compiler support for `while`
-2. runtime improvements for timer-related parity behavior
-3. additional regression tests
+1. EVAS runtime;
+2. Spectre/Virtuoso runtime;
+3. EVAS-vs-Spectre agreement;
+4. repair eligibility, rescued count, and unsupported count.
 
-### 8.2 Proof that lock behavior does not require `idtmod`
+### 5.3 Current System Configuration
 
-The project showed that stable lock behavior can be achieved with event-driven timer-based modeling, without requiring `idtmod` for the baseline path.
+The latest snapshot includes:
 
-This matters because:
+1. per-task EVAS output isolation for parallel scoring;
+2. fingerprinted resume cache;
+3. contract-based save policy;
+4. parity-validated fast checkers enabled by default;
+5. DFF checker sampling-window fix;
+6. signature-gated H prototype.
 
-1. it gives an EVAS-friendly modeling baseline
-2. it reduces premature dependence on more delicate operators
-3. it creates a clean A/B path for future `idt/idtmod` decisions
+## 6. Results
 
-### 8.3 `idtmod` as compatibility path rather than default path
+### 6.1 Main EVAS Matrix
 
-The `ADPLL idtmod` variant demonstrates that `idtmod` can still be supported as a compatibility option, but should be justified through parity improvement rather than assumed as the default best style.
+Current refreshed Kimi results:
 
-### 8.4 Formalization of benchmark-construction workflow
+| Condition | Description | Pass@1 | Pass count |
+|---|---|---:|---:|
+| A | Raw prompt | 0.1957 | 18/92 |
+| B | Checker-transparent prompt | 0.2717 | 25/92 |
+| C | Checker + skill prompt | 0.2717 | 25/92 |
+| D | Single-round EVAS repair, no skill | 0.5217 | 48/92 |
+| E | Single-round EVAS repair + skill | 0.5109 | 47/92 |
+| F | Multi-round EVAS repair, no skill | 0.6304 | 58/92 |
+| G | Multi-round EVAS repair + skill | 0.5326 | 49/92 |
+| H | Signature-guided H-on-F prototype | 0.6413 | 59/92 |
 
-The team now has a reusable documented path from example to benchmark. This is important because it converts individual experiments into auditable benchmark growth.
+The clearest trend is that executable EVAS feedback changes the regime. Static prompt changes improve over raw prompting, but the major jump comes from simulation-guided repair.
 
-## 9. Current Empirical Evidence
+### 6.2 Recommended Main-Table Simplification
 
-The current evidence base is still small, but it is already stronger than a toy demonstration.
+For the paper's main story, the matrix can be simplified to A/D/F/H:
 
-### 9.1 Closed-loop cases already validated
+| Condition | Pass count | Main claim |
+|---|---:|---|
+| A | 18/92 | Raw LLM generation is insufficient. |
+| D | 48/92 | One EVAS feedback round substantially improves generation. |
+| F | 58/92 | EVAS speed enables useful multi-round repair. |
+| H | 59/92 | Structured failure signatures begin to improve repair quality. |
 
-Known validated directions include:
+B/C/E/G remain useful ablations, but they should not distract from the main feedback loop.
 
-1. `CPPLL timer` parity closure after EVAS fixes
-2. parameter-shifted `CPPLL` stability check
-3. `ADPLL timer` successful closed-loop alignment
-4. `ADPLL idtmod` compatibility validation
+### 6.3 Family-Level Results
 
-### 9.2 Benchmark task already formalized
+| Condition | End-to-end | Spec-to-VA | Bugfix | TB generation |
+|---|---:|---:|---:|---:|
+| A | 0.0909 | 0.1667 | 0.5000 | 0.5455 |
+| D | 0.4182 | 0.4444 | 0.7500 | 1.0000 |
+| F | 0.5636 | 0.5556 | 0.7500 | 1.0000 |
+| H | 0.5636 | 0.6111 | 0.7500 | 1.0000 |
 
-The project has already promoted at least one case into a formal benchmark task:
+The largest improvements occur in end-to-end and spec-to-VA tasks, where raw generation frequently fails either compile or behavior.
 
-1. `adpll_lock_smoke`
+### 6.4 Failure Taxonomy
 
-This includes:
+| Condition | Simulation correctness failures | DUT compile failures | TB compile failures | Other |
+|---|---:|---:|---:|---:|
+| A | 48 | 20 | 5 | 1 |
+| D | 41 | 1 | 0 | 2 |
+| F | 31 | 1 | 0 | 2 |
+| H | 30 | 1 | 0 | 2 |
 
-1. prompt
-2. metadata
-3. checks
-4. runner integration
+This table supports a nuanced claim. EVAS-guided repair sharply reduces compile and testbench failures, but the remaining hard problems are mostly behavior failures. This motivates signature-guided and assertion-style feedback.
 
-### Blank: result table
+### 6.5 H and H2 Evidence
 
-`[TODO]`
+Condition H currently improves the formal Kimi snapshot from 58/92 to 59/92. The formal gain is modest, but it is meaningful because it demonstrates that failure-signature repair can transfer back to the formal scoring path. The strict H rescues observed in diagnostic settings include divider cadence, multimod divider cadence, and flash ADC code coverage.
 
-Insert a compact quantitative table with:
+H2 probes on the remaining failure set show that more tasks can be rescued when generated-testbench repair, validated fast checkers, and transferable DUT templates are combined. The conservative fast-default H2 failure-anchor result reaches 10/33 on the H-on-F failure set. This is not yet a full 92-task formal condition, but it identifies promising mechanisms for the next method iteration.
 
-1. task name
-2. EVAS pass/fail
-3. Spectre comparison status
-4. main parity metric
-5. promotion status
+### 6.6 EVAS-Spectre Consistency and Runtime
 
-Working table template:
+This is the most important missing table for the final paper.
 
-1. [BENCHMARK_RESULT_TABLE.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/benchmark/BENCHMARK_RESULT_TABLE.md)
+| Task subset | # tasks | EVAS/Spectre behavior agreement | EVAS median runtime | Spectre median runtime | Speedup |
+|---|---:|---:|---:|---:|---:|
+| Basic smoke tasks | TBD | TBD | TBD | TBD | TBD |
+| Data-converter tasks | TBD | TBD | TBD | TBD | TBD |
+| PLL/PFD tasks | TBD | TBD | TBD | TBD | TBD |
+| Full selected acceptance set | TBD | TBD | TBD | TBD | TBD |
 
-### Blank: baseline comparison
+This table is necessary because it justifies EVAS as the fast proxy used by the repair loop.
 
-`[TODO]`
+### 6.7 Spectre/Virtuoso Final Acceptance
 
-Add comparison against:
+This table should be filled only after running selected final artifacts in Spectre/Virtuoso.
 
-1. non-executable text-only evaluation
-2. naive compile-only evaluation
-3. digital HDL benchmark assumptions
+| Condition | EVAS pass count | Spectre/Virtuoso pass count | Agreement | Notes |
+|---|---:|---:|---:|---|
+| A | 18/92 | TBD | TBD | Raw baseline. |
+| D | 48/92 | TBD | TBD | Single-round EVAS repair. |
+| F | 58/92 | TBD | TBD | Main multi-round EVAS result. |
+| H | 59/92 | TBD | TBD | Signature-guided prototype. |
 
-Working model-evaluation table:
+The final claim should be based on both EVAS-side improvement and Spectre/Virtuoso confirmation on the key conditions.
 
-1. [AI_MODEL_EVAL_TABLE.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/benchmark/AI_MODEL_EVAL_TABLE.md)
+## 7. Analysis
 
-## 10. Comparison to RTL-Oriented Work
+### 7.1 What EVAS Repair Solves Well
 
-Compared with RTL-oriented benchmarks such as `VerilogEval` and `OpenLLM-RTL`, `vaEvas` differs in several ways.
+EVAS feedback is effective for:
 
-### 10.1 Similarities
+1. syntax and simulator-compatibility errors;
+2. missing generated files or invalid testbench wiring;
+3. observable contract problems such as missing CSV signals;
+4. simple local behavior failures such as counters, dividers, quantizers, and reset sampling;
+5. candidate selection when multiple repair variants are generated.
 
-1. both aim to evaluate executable HDL generation
-2. both benefit from standardized task packaging
-3. both need clear pass/fail criteria and benchmark reproducibility
+These are cases where the failure is local enough that simulation evidence can guide a safe correction.
 
-### 10.2 Key differences
+### 7.2 Why Some Failures Remain Hard
 
-1. `vaEvas` targets Verilog-A rather than RTL
-2. `vaEvas` must handle analog behavioral semantics and event-driven modeling subtleties
-3. `vaEvas` needs simulator-aware validation
-4. `vaEvas` includes cross-simulator parity for selected tasks
-5. `vaEvas` currently emphasizes workflow and failure attribution more explicitly
+The remaining failures are usually not caused by a lack of syntax information. They often require deeper behavioral reasoning:
 
-### 10.3 Related-Work Positioning
+1. PLL and ADPLL failures may require submodule-level reasoning about phase detection, loop filtering, divider feedback, and lock windows.
+2. Multi-module tasks may fail because one submodule is correct but the harness or interface is wrong.
+3. Some generated artifacts produce no activity, leaving the checker with too little evidence.
+4. Some repair prompts modify the wrong region or break a previously correct part of the design.
 
-The closest public references to `vaEvas` currently come from RTL-oriented LLM evaluation and generation systems rather than from Verilog-A-specific benchmarks.
+This suggests that the next stage should not simply add more repair rounds. It should improve localization, submodule diagnosis, and assertion-style failure signatures.
 
-`VerilogEval` represents the most direct baseline for executable HDL evaluation. Its core contribution is to evaluate generated Verilog through runnable functional validation rather than text similarity alone. This is closely aligned with the execution-first philosophy of `vaEvas`. However, `vaEvas` differs by targeting Verilog-A behavioral models, where waveform semantics, event handling, and simulator behavior matter more directly than in typical RTL tasks.
+### 7.3 Why Static Skills Are Not Enough
 
-`VGen` is especially useful as a reference for the minimal executable loop. It separates syntax acceptance from functional validation through testbenches, which maps naturally to the `L0/L1` split used in our workflow. In that sense, `VGen` is a useful conceptual baseline for the lightweight side of `vaEvas`: compile success is necessary but not sufficient, and behavior checks must remain explicit and auditable.
+The current results show that skill injection is not automatically beneficial. Conditions C, E, and G do not dominate their no-skill counterparts. A plausible explanation is that static knowledge can help with style but does not know which specific behavior failed in a generated artifact. In contrast, EVAS feedback is instance-specific: it reports what actually happened in simulation.
 
-`OpenLLM-RTL` is closer to `vaEvas` in project shape than in domain. It treats RTL generation as a benchmark-and-framework problem rather than as isolated prompt demos. This is similar to how `vaEvas` tries to connect examples, benchmark tasks, checks, and evaluation artifacts into one system. The difference is that `vaEvas` adds simulator-aware behavioral validation and selective EVAS-Spectre parity loops for high-value tasks.
+This does not mean domain knowledge is useless. It means domain knowledge should be activated by evidence, not injected blindly. This is the motivation for signature-gated templates and possible future RAG over reusable circuit mechanisms.
 
-`RTL-Coder` is valuable as a reference for end-to-end project organization. It shows how a research effort can be structured across data generation, training, inference, and benchmark inference. While `vaEvas` is not yet equally mature on the model-training side, it can benefit from the same systems view: benchmark construction should not remain an isolated activity, but should eventually connect to task generation, model prompting, evaluation, and failure attribution.
+## 8. Related Work
 
-Taken together, these RTL-side works suggest that `vaEvas` is best positioned not as a copy of an RTL benchmark, but as an extension of executable HDL evaluation into the Verilog-A setting. Its distinctive additions are:
+### Executable HDL generation benchmarks
 
-1. Verilog-A rather than RTL as the target language
-2. EVAS-first runtime validation
-3. layered closure from minimal execution to parity-sensitive validation
-4. benchmark construction from real behavioral examples
-5. optional cross-simulator parity against Virtuoso/Spectre
+VerilogEval, VGen, RTLLM, and OpenLLM-RTL establish the importance of executable evaluation for digital HDL generation. Their benchmarks typically provide prompts, reference designs, and testbenches. `vaEvas` follows this execution-first principle but applies it to Verilog-A behavioral modeling, where analog behavior, event timing, and simulator compatibility are central.
 
-The remaining related-work gap is on the Verilog-A side. Prior Verilog-A literature has addressed modeling tools, automatic behavioral abstraction, and data-driven model construction, but we have not yet fully integrated those references into a dedicated subsection. That integration remains necessary for a paper-ready version of this draft.
+### Assertion-based verification and data quality
 
-## 11. Data and Artifact Design
+OpenLLM-RTL introduces AssertEval and uses assertion-guided functional checking to construct a smaller but higher-quality verified dataset. This supports an important lesson: verified feedback can be more valuable than raw volume. Our work adopts the same philosophy at inference time. Instead of training on verified data, we repair candidates using EVAS-based executable feedback and failure signatures.
 
-The benchmark artifact design currently centers around task directories with:
+### Analog and mixed-signal behavioral modeling
 
-1. `prompt.md`
-2. `meta.json`
-3. `checks.yaml`
-4. runner-side behavior check logic
+Verilog-A modeling has a long history in analog and mixed-signal design, but public LLM-oriented Verilog-A benchmarks remain limited. Existing RTL benchmarks cannot directly capture Verilog-A-specific issues such as analog observability, transition behavior, save policies, continuous-time simulation, and cross-simulator consistency. `vaEvas` targets this gap.
 
-Closed-loop artifact bundles may additionally include:
+## 9. Limitations
 
-1. EVAS waveforms
-2. Spectre waveforms
-3. `consistency_report.json`
-4. gate decisions and iteration labels
+The current system has several limitations.
 
-### Blank: dataset schema
+1. H is still a prototype and currently provides only a small formal gain over F.
+2. H2 evidence is promising but not yet a full formal 92-task condition.
+3. Spectre/Virtuoso acceptance results are still missing from the main condition matrix.
+4. Some tasks remain sensitive to checker runtime and observable configuration.
+5. The benchmark should include a random-retry control to rule out the possibility that gains come only from more LLM attempts.
+6. Template-based repair must be audited for overfitting by requiring signature-based rather than task-name-based triggering.
 
-`[TODO]`
+These limitations are useful rather than embarrassing: they define the next experiments needed to make the paper rigorous.
 
-Define a stable schema for:
+## 10. Planned Experiments
 
-1. task categories
-2. reference artifacts
-3. accepted metrics
-4. failure tags
-5. benchmark maturity stage
+The next experiments should be prioritized as follows.
 
-## 12. Skills and Human-in-the-Loop Workflow
+1. EVAS-Spectre consistency and speed table on a selected representative set.
+2. Spectre/Virtuoso acceptance for A, D, F, and H final artifacts.
+3. Same-budget random retry control against D/F/H.
+4. H ablation: signature-gated templates vs task-name-triggered templates.
+5. H2 formalization on the full 92-task matrix if the failure-anchor result remains promising.
+6. Failure taxonomy table separating syntax, harness, observable, and behavior failures.
 
-One distinctive aspect of `vaEvas` is that benchmark growth is not treated as pure dataset scraping. Instead, model generation guidance and benchmark authoring are tied together through:
+## 11. Figures
 
-1. `veriloga-skills`
-2. EVAS compatibility guidance
-3. parity-gate rules for `idt/idtmod`
-4. documented onboarding and PR workflow
+### Figure 1: EVAS-guided repair loop
 
-This is useful because Verilog-A tasks often require:
+```mermaid
+flowchart LR
+  P[Prompt] --> G[LLM generation]
+  G --> C[EVAS compile]
+  C --> S[EVAS simulation]
+  S --> K[Checker / assertion]
+  K --> F[Failure signature]
+  F --> R[Repair proposal]
+  R --> S
+  K --> A[Best artifact]
+  A --> V[Spectre/Virtuoso acceptance]
+```
 
-1. domain-aware modeling patterns
-2. simulator support awareness
-3. structured debugging when runtime behavior is wrong
+### Figure 2: Condition ladder
 
-### Blank: human vs automated roles
+```mermaid
+flowchart TB
+  A[A: raw prompt] --> D[D: one EVAS feedback round]
+  D --> F[F: multi-round EVAS repair]
+  F --> H[H: signature-guided EVAS repair]
+  H --> SP[Spectre/Virtuoso confirmation]
+```
 
-`[TODO]`
+### Figure 3: Failure signal hierarchy
 
-Clarify which parts are currently:
+```mermaid
+flowchart TB
+  X[Generated artifact] --> L0[DUT compile]
+  L0 --> L1[Testbench compile]
+  L1 --> L2[Simulation output / CSV]
+  L2 --> L3[Behavior checker]
+  L3 --> L4[Structured failure signature]
+  L4 --> L5[Mechanism-aware repair]
+```
 
-1. human-authored
-2. AI-assisted
-3. automatically scored
-4. not yet automated
+## 12. Conclusion
 
-## 13. Limitations
+This draft argues that the central bottleneck in LLM-generated Verilog-A is not only model capability, but the lack of fast executable feedback. EVAS addresses this bottleneck by making simulation cheap enough to become the inner loop of repair. The current 92-task results show that EVAS-guided repair substantially improves over raw prompting, especially when moving from no feedback to single-round and multi-round feedback. The next step is to complete the Spectre/Virtuoso consistency and acceptance tables, then refine signature-guided repair into a robust, non-overfit method.
 
-The current project has important limitations.
-
-1. coverage is still small
-2. the benchmark suite is not yet broad enough to claim field-wide representativeness
-3. most current evidence is concentrated on voltage-domain and closed-loop examples
-4. quantitative comparison against external baselines is still incomplete
-5. benchmark maturity is uneven across task families
-6. current reporting is stronger on workflow than on large-scale statistics
-
-## 14. Next Priorities
-
-The next stage of work should focus on the following blanks first.
-
-### Priority A: scale benchmark inventory
-
-`[TODO]`
-
-Promote more examples into benchmark seeds, especially:
-
-1. `lfsr`
-2. `clk_burst_gen`
-3. `digital_basics`
-4. `dac_binary_clk_4b`
-5. `adc_dac_ideal_4b`
-6. `dwa_ptr_gen`
-
-### Priority B: add formal result tables
-
-`[TODO]`
-
-Create reproducible tables for:
-
-1. task counts
-2. pass rates
-3. parity-qualified tasks
-4. failure modes
-5. per-category coverage
-
-### Priority C: unify scoring language
-
-`[TODO]`
-
-Define a consistent score stack across tasks, for example:
-
-1. `dut_compile`
-2. `tb_compile`
-3. `sim_correct`
-4. parity-qualified or not
-5. failure attribution tag
-
-### Priority D: strengthen related work
-
-`[TODO]`
-
-Integrate:
-
-1. `VerilogEval`
-2. `OpenLLM-RTL`
-3. prior Verilog-A modeling/tool papers
-
-### Priority E: prepare paper-grade figures
-
-`[TODO]`
-
-Potential figures:
-
-1. overall system diagram
-2. example-to-benchmark conversion pipeline
-3. EVAS-first closed-loop parity loop
-4. benchmark taxonomy table
-5. CPPLL/ADPLL parity result snapshots
-
-## 15. Proposed Paper Claim
-
-If written as a paper today, the most honest claim would be:
-
-`vaEvas is an emerging execution-first framework for Verilog-A generation evaluation, centered on EVAS-compatible runtime validation, parity-guided debugging, and benchmark construction from real behavioral examples.`
-
-It is not yet strongest as a "large benchmark paper."
-
-It is strongest today as a paper about:
-
-1. evaluation methodology
-2. simulator-aware benchmark construction
-3. closed-loop behavioral validation workflow
-4. early benchmark artifacts for Verilog-A
-
-## 16. One-Paragraph Version
-
-`vaEvas` aims to do for Verilog-A what recent HDL benchmarks have done for Verilog/RTL, but with a stronger emphasis on execution, simulator semantics, and closed-loop behavioral evidence. The current system already links simulator repair, benchmark authoring, skills guidance, and team workflow into one loop. Its clearest present strengths are EVAS-first evaluation, EVAS-Spectre parity debugging, and the conversion of real examples such as CPPLL and ADPLL into benchmark-ready assets. The main unfinished work is scale: more tasks, more uniform scoring, stronger baselines, and paper-grade aggregate results.
