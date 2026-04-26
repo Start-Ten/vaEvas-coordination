@@ -12,7 +12,7 @@ Supporting snapshot: [LATEST_SYSTEM_SNAPSHOT_2026-04-26.md](/Users/bucketsran/Do
 
 ## Abstract
 
-Large language models can produce plausible Verilog-A code, but direct text generation is unreliable for analog and mixed-signal behavioral models: candidates may fail to compile, instantiate incompatible testbenches, or simulate but violate the intended behavior. Industrial simulators such as Spectre/Virtuoso can validate these failures, but their runtime cost makes them unsuitable as the inner loop of repeated LLM repair. We present `vaEvas`, an EVAS-guided framework for executable evaluation and closed-loop repair of LLM-generated Verilog-A behavioral models. The key observation is that EVAS can provide behaviorally consistent results with Spectre/Virtuoso while running fast enough to support high-throughput generate-simulate-repair iterations. In `vaEvas`, each candidate is compiled, simulated, checked against task-specific behavioral contracts, and repaired using structured EVAS feedback. On a 92-task benchmark, a raw Kimi baseline solves 18 tasks, while multi-round EVAS repair solves 58 tasks; a signature-guided repair prototype further reaches 59 tasks under the current formal snapshot. These EVAS-side results are complemented by a planned Spectre/Virtuoso acceptance table to verify that the gains transfer to the industrial simulator. Our results suggest that fast executable feedback is a necessary ingredient for reliable LLM-based Verilog-A generation.
+Large language models can produce plausible Verilog-A code, but direct text generation is unreliable for analog and mixed-signal behavioral models: candidates may fail to compile, instantiate incompatible testbenches, or simulate but violate the intended behavior. Industrial simulators such as Spectre/Virtuoso can validate these failures, but their runtime cost makes them unsuitable as the inner loop of repeated LLM repair. We present `vaEvas`, an EVAS-guided framework for executable evaluation and closed-loop repair of LLM-generated Verilog-A behavioral models. The key observation is that EVAS can provide behaviorally consistent results with Spectre/Virtuoso while running fast enough to support high-throughput generate-simulate-repair iterations. In `vaEvas`, each candidate is compiled, simulated, checked against task-specific behavioral contracts, and repaired using structured EVAS feedback. On a 92-task benchmark, a raw Kimi baseline solves 18 tasks, while multi-round EVAS repair solves 58 tasks; a signature-guided repair prototype further reaches 59 tasks under the current formal snapshot. An ongoing extension aligns public task contracts with assertion-style checker feedback, so that repair can target the specific behavioral contract that was violated rather than only a coarse pass/fail outcome. These EVAS-side results are complemented by a planned Spectre/Virtuoso acceptance table to verify that the gains transfer to the industrial simulator. Our results suggest that fast executable feedback is a necessary ingredient for reliable LLM-based Verilog-A generation.
 
 ## 1. Introduction
 
@@ -31,7 +31,7 @@ This paper makes four contributions.
 1. We introduce a 92-task executable Verilog-A generation benchmark with task prompts, generated artifacts, testbenches, and three-layer scoring: DUT compile, testbench compile, and simulation correctness.
 2. We propose an EVAS-guided closed-loop repair workflow that turns simulator feedback into repair signals for LLM-generated Verilog-A.
 3. We evaluate a staged condition matrix showing that EVAS feedback substantially improves over raw prompting, from 18/92 raw-pass tasks to 58/92 with multi-round EVAS repair in the current Kimi snapshot.
-4. We develop signature-guided repair and validated fast checkers as a path toward higher-quality feedback, while keeping Spectre/Virtuoso acceptance as the final validation target.
+4. We develop signature-guided repair, contract-aligned assertion feedback, and validated fast checkers as a path toward higher-quality feedback, while keeping Spectre/Virtuoso acceptance as the final validation target.
 
 The current draft reports EVAS-side results first because they are the basis of rapid iteration. The final paper should also include Spectre/Virtuoso acceptance for the main conditions and an EVAS-vs-Spectre behavior-consistency table.
 
@@ -126,6 +126,8 @@ Our contract policy is:
 3. repair-time feedback may include generalized circuit principles and failure signatures;
 4. signature-guided templates must be triggered by failure evidence, not by task name.
 
+Here, a contract is not a leak of checker code or gold implementation. It is the public behavioral specification required for the task to be well-defined. If the checker ultimately evaluates divider cadence, ADC code coverage, PFD pulse windows, or PLL lock behavior, then those properties should appear in the public task contract in natural-language or structured form. Assertion-style checkers can then turn the public contract into executable predicates used for EVAS-side failure localization.
+
 ## 4. Method: EVAS-Guided Closed-Loop Repair
 
 ### 4.1 Overall Loop
@@ -161,6 +163,7 @@ The main story can be expressed with four conditions:
 | D | Single-round EVAS repair | Does one simulation-feedback round help? |
 | F | Multi-round EVAS repair | Does EVAS speed enable better multi-round optimization? |
 | H | Signature-guided EVAS repair | Does higher-quality structured feedback improve repair? |
+| I | Contract-aligned assertion-guided repair, ongoing | Can public behavioral contracts and executable assertions further improve localization? |
 
 Additional controls should be reported separately rather than bloating the main table:
 
@@ -185,6 +188,18 @@ The H condition is not intended to hard-code individual benchmark answers. Inste
 | Multi-module interface sanity | missing CSV, undriven submodule output | Multi-module artifacts and harness mismatch. |
 
 Only templates that rescue multiple tasks under signature-gated triggering should be promoted into the formal method. Single-task rescues should be recorded as exploratory evidence.
+
+### 4.5 Contract-Aligned Assertion-Guided Repair (Ongoing)
+
+The ongoing next layer can be treated as condition I. It addresses a weakness of H: even structured failure signatures may not clearly identify which public task contract was violated. Condition I therefore binds the public task contract to assertion-style checker feedback.
+
+The intended loop has three layers:
+
+1. **Public contract layer.** The prompt or task specification states the required interface, observable signals, behavioral metrics, and simulation windows without revealing the gold implementation.
+2. **Executable assertion layer.** The public contract is translated into EVAS-checkable predicates, such as code coverage, cadence ratio, pulse width, lock window, or sequence alignment.
+3. **Repair feedback layer.** When EVAS fails, the repair prompt reports the violated contract item, observed value, target range, and likely module or signal region.
+
+This follows the verification-quality lesson from OpenLLM-RTL, but uses assertions at repair time rather than as a training-data filter. Because I is still under optimization, this draft treats it as a planned condition rather than an established pass-rate result.
 
 ## 5. Experimental Setup
 
@@ -245,12 +260,13 @@ Current refreshed Kimi results:
 | F | Multi-round EVAS repair, no skill | 0.6304 | 58/92 |
 | G | Multi-round EVAS repair + skill | 0.5326 | 49/92 |
 | H | Signature-guided H-on-F prototype | 0.6413 | 59/92 |
+| I | Contract-aligned assertion-guided repair | TBD | TBD |
 
 The clearest trend is that executable EVAS feedback changes the regime. Static prompt changes improve over raw prompting, but the major jump comes from simulation-guided repair.
 
-### 6.2 Recommended Main-Table Simplification
+### 6.2 Recommended Main-Table Simplification with I Reserved
 
-For the paper's main story, the matrix can be simplified to A/D/F/H:
+For the paper's main story, A/D/F/H should present the completed evidence chain, while I should be reserved as the ongoing next method layer:
 
 | Condition | Pass count | Main claim |
 |---|---:|---|
@@ -258,6 +274,7 @@ For the paper's main story, the matrix can be simplified to A/D/F/H:
 | D | 48/92 | One EVAS feedback round substantially improves generation. |
 | F | 58/92 | EVAS speed enables useful multi-round repair. |
 | H | 59/92 | Structured failure signatures begin to improve repair quality. |
+| I | TBD | Contract-aligned assertion feedback is being evaluated for the remaining behavior failures. |
 
 B/C/E/G remain useful ablations, but they should not distract from the main feedback loop.
 
@@ -289,7 +306,18 @@ Condition H currently improves the formal Kimi snapshot from 58/92 to 59/92. The
 
 H2 probes on the remaining failure set show that more tasks can be rescued when generated-testbench repair, validated fast checkers, and transferable DUT templates are combined. The conservative fast-default H2 failure-anchor result reaches 10/33 on the H-on-F failure set. This is not yet a full 92-task formal condition, but it identifies promising mechanisms for the next method iteration.
 
-### 6.6 EVAS-Spectre Consistency and Runtime
+### 6.6 I: Contract-Aligned Assertion Loop (Ongoing)
+
+Condition I is the active optimization direction that aligns task contracts with checker/assertion feedback. It should not be confused with condition B. B statically exposes more checker information before generation; I uses executable assertion failures after EVAS simulation to guide repair.
+
+The key questions to validate are:
+
+1. whether I reduces behavior failures caused by mismatch between prompt-visible goals and checker goals;
+2. whether I turns coarse `FAIL_SIM_CORRECTNESS` outcomes into actionable contract violations;
+3. whether I improves the remaining F/H failure set without leaking gold implementation details;
+4. whether I's gains transfer to Spectre/Virtuoso acceptance.
+
+### 6.7 EVAS-Spectre Consistency and Runtime
 
 This is the most important missing table for the final paper.
 
@@ -302,7 +330,7 @@ This is the most important missing table for the final paper.
 
 This table is necessary because it justifies EVAS as the fast proxy used by the repair loop.
 
-### 6.7 Spectre/Virtuoso Final Acceptance
+### 6.8 Spectre/Virtuoso Final Acceptance
 
 This table should be filled only after running selected final artifacts in Spectre/Virtuoso.
 
@@ -312,6 +340,7 @@ This table should be filled only after running selected final artifacts in Spect
 | D | 48/92 | TBD | TBD | Single-round EVAS repair. |
 | F | 58/92 | TBD | TBD | Main multi-round EVAS result. |
 | H | 59/92 | TBD | TBD | Signature-guided prototype. |
+| I | TBD | TBD | TBD | Contract-aligned assertion-guided repair, ongoing. |
 
 The final claim should be based on both EVAS-side improvement and Spectre/Virtuoso confirmation on the key conditions.
 
@@ -380,9 +409,10 @@ The next experiments should be prioritized as follows.
 1. EVAS-Spectre consistency and speed table on a selected representative set.
 2. Spectre/Virtuoso acceptance for A, D, F, and H final artifacts.
 3. Same-budget random retry control against D/F/H.
-4. H ablation: signature-gated templates vs task-name-triggered templates.
-5. H2 formalization on the full 92-task matrix if the failure-anchor result remains promising.
-6. Failure taxonomy table separating syntax, harness, observable, and behavior failures.
+4. Implement and evaluate condition I: contract-aligned assertion-guided repair.
+5. H/I ablations: signature-gated templates, contract-only feedback, assertion-only feedback, and contract+assertion feedback.
+6. H2/I formalization on the full 92-task matrix if failure-anchor results remain promising.
+7. Failure taxonomy table separating syntax, harness, observable, and behavior failures.
 
 ## 11. Figures
 
@@ -408,7 +438,8 @@ flowchart TB
   A[A: raw prompt] --> D[D: one EVAS feedback round]
   D --> F[F: multi-round EVAS repair]
   F --> H[H: signature-guided EVAS repair]
-  H --> SP[Spectre/Virtuoso confirmation]
+  H --> I[I: contract-aligned assertion-guided repair]
+  I --> SP[Spectre/Virtuoso confirmation]
 ```
 
 ### Figure 3: Failure signal hierarchy
@@ -425,4 +456,4 @@ flowchart TB
 
 ## 12. Conclusion
 
-This draft argues that the central bottleneck in LLM-generated Verilog-A is not only model capability, but the lack of fast executable feedback. EVAS addresses this bottleneck by making simulation cheap enough to become the inner loop of repair. The current 92-task results show that EVAS-guided repair substantially improves over raw prompting, especially when moving from no feedback to single-round and multi-round feedback. The next step is to complete the Spectre/Virtuoso consistency and acceptance tables, then refine signature-guided repair into a robust, non-overfit method.
+This draft argues that the central bottleneck in LLM-generated Verilog-A is not only model capability, but the lack of fast executable feedback. EVAS addresses this bottleneck by making simulation cheap enough to become the inner loop of repair. The current 92-task results show that EVAS-guided repair substantially improves over raw prompting, especially when moving from no feedback to single-round and multi-round feedback. The next step is to complete the Spectre/Virtuoso consistency and acceptance tables, then extend signature-guided repair into contract-aligned assertion-guided repair so that feedback is both non-overfit and explicitly tied to public behavioral contracts.

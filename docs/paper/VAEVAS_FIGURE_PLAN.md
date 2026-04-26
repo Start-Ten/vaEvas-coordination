@@ -53,9 +53,9 @@ Image-generation prompt if needed:
 Create a clean academic comparison diagram showing why EVAS is faster than Spectre/Virtuoso for behavioral Verilog-A repair. Left column: Spectre/Virtuoso SPICE-class flow with current contributions, KCL/KVL equations, MNA matrix solve, nonlinear continuous-time iteration. Right column: EVAS event-driven voltage-domain flow with V() voltage contributions, cross/timer/above event queue, transition output shaping, CSV checker output. Add a clear boundary note: EVAS is for pure voltage-domain behavioral models, not arbitrary current-domain SPICE simulation. Professional IEEE-style vector diagram, white background, readable labels.
 ```
 
-## Figure 2: Condition Ladder A/D/F/H
+## Figure 2: Condition Ladder A/D/F/H/I
 
-Purpose: explain why the main story can be simplified to A/D/F/H.
+Purpose: explain why the main story can be simplified to A/D/F/H, while showing I as the ongoing contract/assertion extension.
 
 Mermaid source:
 
@@ -64,14 +64,16 @@ flowchart TB
   A[A: raw prompt] --> D[D: single EVAS feedback round]
   D --> F[F: multi-round EVAS repair]
   F --> H[H: signature-guided EVAS repair]
-  H --> SP[Spectre/Virtuoso confirmation]
+  H --> I[I: contract-aligned assertion-guided repair]
+  I --> SP[Spectre/Virtuoso confirmation]
 ```
 
 Suggested visual style:
 
 1. Use a staircase or ladder.
-2. Put pass counts next to each step: A 18/92, D 48/92, F 58/92, H 59/92.
-3. Mark B/C/E/G as small side ablation bubbles, not in the main path.
+2. Put pass counts next to completed steps: A 18/92, D 48/92, F 58/92, H 59/92.
+3. Mark I as "ongoing / TBD" rather than an established result.
+4. Mark B/C/E/G as small side ablation bubbles, not in the main path.
 
 ## Figure 3: Failure Taxonomy and Feedback Quality
 
