@@ -4,21 +4,24 @@
 
 所有代码仓库统一采用：
 
-1. `origin = 个人 fork`
-2. `upstream = 团队主仓库`
+1. `origin = 个人 fork 或自己的工作 remote`
+2. `bucketsran = bucketsran 的 review/integration fork`
+3. `upstream = Arcadia-1 等上游公共主仓`
 
 默认工作方式是：
 
-1. 从 `upstream/main` 同步最新公共基线
+1. 从 `bucketsran/main` 或负责人指定分支同步当前团队基线
 2. 在本地基于最新基线开任务分支
 3. 推送到自己的 `origin/<branch>`
-4. 通过 PR 合回 `upstream/main`
+4. 通过 PR 合回 `BucketSran/*`
+5. 经 bucketsran 复核后，再决定是否向 `upstream` 提 PR
 
 所以从协作角度看：
 
 1. 每个人维护的是自己的 fork
-2. 团队共享的是主仓库基线
-3. 中间层负责人主要复核进入主仓库的改动，而不是替每个人直接维护他们的开发分支
+2. bucketsran fork 是当前协作 review 入口
+3. upstream 是对外公共主仓，不是普通协作者第一提交目标
+4. 中间层负责人主要复核进入 bucketsran fork 的改动，而不是替每个人直接维护他们的开发分支
 
 ---
 
@@ -39,7 +42,8 @@
 Git：
 
 1. `upstream`: `https://github.com/Arcadia-1/EVAS.git`
-2. `origin` 示例: `https://github.com/<your-account>/EVAS.git`
+2. `bucketsran`: `https://github.com/BucketSran/EVAS.git`
+3. `origin` 示例: `https://github.com/<your-account>/EVAS.git`
 
 用途：
 
@@ -56,7 +60,8 @@ Git：
 Git：
 
 1. `upstream`: `https://github.com/Arcadia-1/behavioral-veriloga-eval.git`
-2. `origin` 示例: `https://github.com/<your-account>/behavioral-veriloga-eval.git`
+2. `bucketsran`: `https://github.com/BucketSran/behavioral-veriloga-eval.git`
+3. `origin` 示例: `https://github.com/<your-account>/behavioral-veriloga-eval.git`
 
 用途：
 
@@ -103,7 +108,8 @@ Git：
 Git：
 
 1. `upstream`: `https://github.com/Arcadia-1/veriloga-skills.git`
-2. `origin` 示例: `https://github.com/<your-account>/veriloga-skills.git`
+2. `bucketsran`: `https://github.com/BucketSran/veriloga-skills.git`
+3. `origin` 示例: `https://github.com/<your-account>/veriloga-skills.git`
 
 用途：
 
@@ -120,7 +126,8 @@ Git：
 Git：
 
 1. 团队主仓: `https://github.com/Arcadia-1/virtuoso-bridge-lite`
-2. 个人 fork 示例: `https://github.com/<your-account>/virtuoso-bridge-lite.git`
+2. bucketsran fork 或团队指定 fork：按负责人提供的 remote 为准
+3. 个人 fork 示例: `https://github.com/<your-account>/virtuoso-bridge-lite.git`
 
 用途：
 
@@ -142,7 +149,8 @@ Git：
 
 Git：
 
-1. 协作仓库示例: `https://github.com/<your-account>/vaEvas-coordination.git`
+1. bucketsran: `https://github.com/BucketSran/vaEvas-coordination.git`
+2. 个人 fork 示例: `https://github.com/<your-account>/vaEvas-coordination.git`
 
 用途：
 
@@ -155,6 +163,19 @@ Git：
 1. `coordination` 负责告诉你“当前应该做什么”
 2. 它不天然保证你本地已经拿到了对应代码分支
 3. 所以当 `coordination` 与 `upstream/main` 不一致时，应优先把“分支来源说明”补到 `coordination`，而不是只在私聊里口头同步
+
+## Issue / PR 入口
+
+当前协作约定：
+
+1. 有问题先在 `BucketSran/*` 对应仓库提 issue。
+2. 有改动提 PR 给 `BucketSran/*`。
+3. 提完 PR 后微信通知 bucketsran。
+4. bucketsran 复核后再决定是否向 `Arcadia-1/*` upstream 提交。
+
+完整流程见：
+
+1. [../ops/ISSUE_PR_WECHAT_WORKFLOW.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md)
 
 ## 工作流文档所在位置
 

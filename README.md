@@ -55,6 +55,8 @@
 2. [onboarding/00_START_HERE.md](onboarding/00_START_HERE.md)
 3. [onboarding/QUICK_START.md](onboarding/QUICK_START.md)
 4. [docs/project/REPOSITORIES.md](docs/project/REPOSITORIES.md)
+5. [skills/README.md](skills/README.md)
+6. [docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md](docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md)
 
 ## 目录说明
 
@@ -72,6 +74,10 @@
    新成员接入文档。
 7. `scripts/`
    只保留 coordination 侧的数据整理脚本。
+8. `skills/`
+   可分发的 vaEvas agent skills。协作者可以安装 `vaevas-workflow` 和 `vaevas-git-sync` 来统一执行流程和 git/PR 检查。
+9. `templates/`
+   issue、PR、微信通知等协作模板。
 
 ## 清理原则
 
@@ -98,3 +104,14 @@
    当前这个仓库，负责项目管理和研究叙事。
 
 远端同步以 [status/2026-04-29_remote_sync_final_version_manifest.md](status/2026-04-29_remote_sync_final_version_manifest.md) 为准。
+
+## 协作提交流程
+
+发现问题先提 issue；有改动提 PR 给 `bucketsran` 的 fork；提完 PR 后微信通知 bucketsran。
+
+具体见：
+
+1. [docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md](docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md)
+2. [templates/ISSUE_TEMPLATE_BENCHMARK.md](templates/ISSUE_TEMPLATE_BENCHMARK.md)
+3. [templates/PR_DESCRIPTION_TEMPLATE.md](templates/PR_DESCRIPTION_TEMPLATE.md)
+4. [templates/WECHAT_NOTIFY_TEMPLATE.md](templates/WECHAT_NOTIFY_TEMPLATE.md)

@@ -10,8 +10,10 @@
 4. [docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md](docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md)
 5. [docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md](docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md)
 6. [docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md](docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md)
-7. [status/2026-04-29_remote_sync_final_version_manifest.md](status/2026-04-29_remote_sync_final_version_manifest.md)
-8. [docs/00_DOC_MAP.md](docs/00_DOC_MAP.md)
+7. [skills/README.md](skills/README.md)
+8. [docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md](docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md)
+9. [status/2026-04-29_remote_sync_final_version_manifest.md](status/2026-04-29_remote_sync_final_version_manifest.md)
+10. [docs/00_DOC_MAP.md](docs/00_DOC_MAP.md)
 
 ## 2. 目录职责
 
@@ -59,6 +61,17 @@
 
 coordination 侧的数据整理脚本，不包含主 runner。
 
+### `skills/`
+
+可分发给协作者安装的 vaEvas skills。当前包含：
+
+1. `vaevas-workflow`：把 benchmark/runner/EVAS 工作变成 brief、KPI、plan、validation、review 的闭环。
+2. `vaevas-git-sync`：检查 vaEvas 多仓库 git 状态、避免上传 private 或大体积实验噪声。
+
+### `templates/`
+
+issue、PR、微信通知模板。协作者提交问题或改动时优先复用这些模板。
+
 ## 3. 什么算当前主线
 
 当前主线必须同时满足：
@@ -83,3 +96,11 @@ coordination 侧的数据整理脚本，不包含主 runner。
 一句话规则：
 
 `上传最终代码、最终 benchmark、最终知识资产和精简结果摘要；不要上传旧 generated/results 全量目录。`
+
+## 5. Issue/PR/微信规则
+
+1. 有问题先在对应 `BucketSran/*` 仓库提 issue。
+2. 有改动提 PR 给 `bucketsran` 的 fork，不直接推 upstream。
+3. 提完 PR 后微信通知 bucketsran，微信只做提醒，技术细节必须写在 issue/PR 里。
+
+完整规则见 [docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md](docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md)。

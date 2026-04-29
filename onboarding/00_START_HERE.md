@@ -7,8 +7,10 @@
 1. 看协作者启动页：`./COLLABORATOR_START_HERE.md`
 2. 看项目定位：`../README.md`
 3. 看新人最短路径：`./QUICK_START.md`
-4. 看仓库/分支可见性说明：`../status/2026-04-12_repo-visibility-note.md`
-5. 看可执行 SSH + bridge 手册：`./SSH_TUNNEL_DAEMON_RUNBOOK.md`
+4. 看可安装 skills：`../skills/README.md`
+5. 看 issue/PR/微信流程：`../docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md`
+6. 看仓库/分支可见性说明：`../status/2026-04-12_repo-visibility-note.md`
+7. 看可执行 SSH + bridge 手册：`./SSH_TUNNEL_DAEMON_RUNBOOK.md`
 
 ## B. 按顺序执行（第一天）
 
@@ -16,6 +18,7 @@
 2. Virtuoso + EVAS 最小理解：`./VIRTUOSO_EVAS_TEAM_GUIDE.md`
 3. 闭环验证规范：`../docs/benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md`
 4. 一键 AI 指令块：`./AI_ONE_CLICK_TUNNEL_AND_LOOP_PROMPTS.md`
+5. 可选安装 agent skills：`python3 ../skills/install_recommended_skills.py --all`
 
 ## C. 你应该交付什么
 
@@ -26,7 +29,9 @@
 ## D. 如果你卡住
 
 1. 先看：`../docs/ops/UPLOAD_PACK_NOTE.md`
-2. 再按：`./AI_ONE_CLICK_TUNNEL_AND_LOOP_PROMPTS.md` 的故障定位 Prompt
+2. 再看：`../docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md`
+3. 再按：`./AI_ONE_CLICK_TUNNEL_AND_LOOP_PROMPTS.md` 的故障定位 Prompt
+4. 如果确认是项目问题，先提 issue；如果已有修复，提 PR 后微信通知 bucketsran
 
 ## E. 如果任务名在文档里，但你本地仓库里找不到
 

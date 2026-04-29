@@ -1,0 +1,4 @@
+interface:
+  display_name: "vaEvas Git Sync"
+  short_description: "Audit and publish vaEvas sub-repositories safely."
+  default_prompt: "Check vaEvas sub-repositories against their remotes, summarize dirty/untracked files, and commit/push only the approved scope."

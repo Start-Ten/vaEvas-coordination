@@ -40,6 +40,7 @@
 2. [project/REPOSITORIES.md](project/REPOSITORIES.md)
 3. [ops/BUCKETSRAN_SYNC_PROFILE.md](ops/BUCKETSRAN_SYNC_PROFILE.md)
 4. [ops/UPLOAD_PACK_NOTE.md](ops/UPLOAD_PACK_NOTE.md)
+5. [ops/ISSUE_PR_WECHAT_WORKFLOW.md](ops/ISSUE_PR_WECHAT_WORKFLOW.md)
 
 ## 6. 新人接入
 
@@ -48,7 +49,15 @@
 3. [../onboarding/QUICK_START.md](../onboarding/QUICK_START.md)
 4. [../onboarding/NEW_MEMBER_START.md](../onboarding/NEW_MEMBER_START.md)
 
-## 7. 归档
+## 7. Skills 与模板
+
+1. [../skills/README.md](../skills/README.md)
+2. [../skills/recommended-skills.json](../skills/recommended-skills.json)
+3. [../templates/ISSUE_TEMPLATE_BENCHMARK.md](../templates/ISSUE_TEMPLATE_BENCHMARK.md)
+4. [../templates/PR_DESCRIPTION_TEMPLATE.md](../templates/PR_DESCRIPTION_TEMPLATE.md)
+5. [../templates/WECHAT_NOTIFY_TEMPLATE.md](../templates/WECHAT_NOTIFY_TEMPLATE.md)
+
+## 8. 归档
 
 1. [../status/archive/2026-04-legacy-collaboration/README.md](../status/archive/2026-04-legacy-collaboration/README.md)
 2. [archive/2026-04-pre-paper-pivot/README.md](archive/2026-04-pre-paper-pivot/README.md)

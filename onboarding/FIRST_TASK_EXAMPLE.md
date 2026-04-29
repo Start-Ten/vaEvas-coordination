@@ -48,8 +48,8 @@ git status --short --branch
 
 ```bash
 git checkout main
-git fetch upstream
-git merge --ff-only upstream/main
+git fetch bucketsran
+git merge --ff-only bucketsran/main
 git push origin main
 git checkout -b docs/my-first-task
 ```

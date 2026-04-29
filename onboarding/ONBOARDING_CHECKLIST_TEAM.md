@@ -56,7 +56,8 @@
 
 1. 是否已经 fork 到个人账号
 2. `origin` 是否指向个人 fork
-3. `upstream` 是否指向团队主仓
+3. `bucketsran` 或 `upstream` 是否指向 bucketsran 的 review/integration fork
+4. 如需对外 upstream PR，再额外配置 `arcadia` 或 `upstream` 指向 Arcadia-1 主仓
 
 命令：
 
@@ -68,8 +69,8 @@ git remote -v
 
 ```bash
 git checkout main
-git fetch upstream
-git merge --ff-only upstream/main
+git fetch bucketsran
+git merge --ff-only bucketsran/main
 git push origin main
 ```
 

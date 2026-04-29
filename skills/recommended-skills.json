@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "purpose": "Recommended skills for vaEvas collaborators.",
+  "bundled": [
+    {
+      "name": "vaevas-workflow",
+      "source": "skills/bundled/vaevas-workflow",
+      "description": "Interview-led brief/KPI/plan/validation/review loop for vaEvas implementation and benchmark work.",
+      "recommended_for": [
+        "benchmark expansion",
+        "runner or checker changes",
+        "EVAS/Spectre parity work",
+        "structured project planning"
+      ]
+    },
+    {
+      "name": "vaevas-git-sync",
+      "source": "skills/bundled/vaevas-git-sync",
+      "description": "Safe git audit, commit, push, and PR workflow for vaEvas repositories.",
+      "recommended_for": [
+        "local-vs-remote sync checks",
+        "commit preparation",
+        "PR preparation",
+        "avoiding accidental upload of private or bulky files"
+      ]
+    }
+  ],
+  "optional_external": [
+    {
+      "name": "experiment-plan",
+      "why": "Turn benchmark or ablation ideas into reproducible experiment plans."
+    },
+    {
+      "name": "experiment-audit",
+      "why": "Audit whether an experiment result is reproducible and fairly compared."
+    },
+    {
+      "name": "experiment-queue",
+      "why": "Queue long-running A/D/F/G/H/I or model-comparison experiments."
+    },
+    {
+      "name": "run-experiment",
+      "why": "Standardize experiment execution and validation logging."
+    },
+    {
+      "name": "monitor-experiment",
+      "why": "Monitor long-running overnight or remote experiments."
+    },
+    {
+      "name": "analyze-results",
+      "why": "Summarize EVAS/Spectre result tables and failure taxonomies."
+    },
+    {
+      "name": "ablation-planner",
+      "why": "Design controlled comparisons such as grep vs RAG or F vs G vs I."
+    },
+    {
+      "name": "paper-write",
+      "why": "Convert verified results into paper sections."
+    },
+    {
+      "name": "paper-compile",
+      "why": "Check whether paper artifacts compile and references are consistent."
+    },
+    {
+      "name": "research-lit",
+      "why": "Collect related work for Verilog-A, analog behavioral modeling, RAG, and LLM repair."
+    }
+  ]
+}

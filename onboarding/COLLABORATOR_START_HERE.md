@@ -45,13 +45,13 @@
 mkdir -p vaEvas
 cd vaEvas
 
-git clone https://github.com/Arcadia-1/EVAS.git
-git clone https://github.com/Arcadia-1/behavioral-veriloga-eval.git
-git clone https://github.com/Arcadia-1/veriloga-skills.git
+git clone https://github.com/BucketSran/EVAS.git
+git clone https://github.com/BucketSran/behavioral-veriloga-eval.git
+git clone https://github.com/BucketSran/veriloga-skills.git
 git clone https://github.com/BucketSran/vaEvas-coordination.git coordination
 ```
 
-如果你要提交 PR，建议先 fork 这些仓库，然后把自己的 fork 设成 `origin`，团队主仓设成 `upstream`。
+如果你要提交 PR，建议先 fork 这些仓库，然后把自己的 fork 设成 `origin`，把 bucketsran fork 设成 `bucketsran` 或 `upstream`。当前协作阶段的 PR 目标是 `BucketSran/*`；是否再投 upstream 由 bucketsran 复核后决定。
 
 ### 可能需要
 
@@ -83,6 +83,8 @@ git clone https://github.com/Arcadia-1/virtuoso-bridge-lite.git
 4. `coordination/docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md`
 5. `coordination/docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md`
 6. `coordination/docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md`
+7. `coordination/skills/README.md`
+8. `coordination/docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md`
 
 读完以后，你应该能回答：
 
@@ -114,7 +116,27 @@ behavioral-veriloga-eval/tasks/
 4. `checker.py`
 5. `meta.json`
 
-## 7. 你的最小交付
+## 7. 推荐安装的 agent skills
+
+如果你使用 Codex/agent 协作，建议先安装本仓库打包的 skills：
+
+```bash
+cd coordination
+python3 skills/install_recommended_skills.py --all
+```
+
+安装后优先使用：
+
+1. `vaevas-workflow`：规划 benchmark/runner/checker/EVAS 改动，记录 brief、KPI 和验证。
+2. `vaevas-git-sync`：提交前检查 git 状态、避免误传 private 文件或大型实验噪声。
+
+只查看 skill 列表：
+
+```bash
+python3 skills/install_recommended_skills.py --list
+```
+
+## 8. 你的最小交付
 
 建议每位协作者先交一个小包：
 
@@ -130,7 +152,22 @@ behavioral-veriloga-eval/tasks/
 
 `coordination/docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md`
 
-## 8. 不要做什么
+## 9. Issue / PR / 微信通知
+
+协作时请遵守：
+
+1. 发现问题先提 issue。
+2. 有改动提 PR 给 `BucketSran/*` 对应仓库。
+3. 提完 PR 后微信通知 bucketsran。
+
+具体规则和模板见：
+
+1. `coordination/docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md`
+2. `coordination/templates/ISSUE_TEMPLATE_BENCHMARK.md`
+3. `coordination/templates/PR_DESCRIPTION_TEMPLATE.md`
+4. `coordination/templates/WECHAT_NOTIFY_TEMPLATE.md`
+
+## 10. 不要做什么
 
 1. 不要直接修改原始 92 个任务。
 2. 不要把没有许可证说明的外部模型直接复制进 benchmark。
@@ -138,13 +175,15 @@ behavioral-veriloga-eval/tasks/
 4. 不要只用 EVAS PASS 宣称最终通过；需要 Spectre 交叉验证。
 5. 不要把 raw LLM response、巨大 CSV、临时日志提交到远端。
 
-## 9. 你可以复制给 AI 的启动 Prompt
+## 11. 你可以复制给 AI 的启动 Prompt
 
 ```text
 请阅读 coordination/README.md、coordination/status/00_CURRENT_MAINLINE.md、
 coordination/docs/project/REPOSITORIES.md、
 coordination/docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md、
-coordination/docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md。
+coordination/docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md、
+coordination/skills/README.md、
+coordination/docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md。
 
 然后用新手能懂的话告诉我：
 1. vaEvas 现在在做什么；

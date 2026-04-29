@@ -1,0 +1,4 @@
+interface:
+  display_name: "vaEvas Workflow"
+  short_description: "Run vaEvas tasks with interview-led KPI workflow"
+  default_prompt: "Use $vaevas-workflow to execute this vaEvas task with interview, KPI, plan, logs, and review."
