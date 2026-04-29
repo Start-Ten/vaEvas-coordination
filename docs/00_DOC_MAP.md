@@ -26,6 +26,7 @@
 3. [project/EVAS_SPECTRE_ALIGNMENT_AUDIT.md](project/EVAS_SPECTRE_ALIGNMENT_AUDIT.md)
 4. [project/EVAS_TRANSITION_COMPATIBILITY_INVENTORY.md](project/EVAS_TRANSITION_COMPATIBILITY_INVENTORY.md)
 5. [project/FAILURE_TAXONOMY.md](project/FAILURE_TAXONOMY.md)
+6. [../status/2026-04-29_lego_skill_rag_progress.md](../status/2026-04-29_lego_skill_rag_progress.md)
 
 ## 4. 论文
 
