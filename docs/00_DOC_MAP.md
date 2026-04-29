@@ -15,11 +15,15 @@
 2. [benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md](benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md)
 3. [benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md](benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md)
 4. [benchmark/BENCHMARK_EXPANSION_PLAN.md](benchmark/BENCHMARK_EXPANSION_PLAN.md)
-5. [benchmark/EVAS_SPECTRE_TIMING_PLAN.md](benchmark/EVAS_SPECTRE_TIMING_PLAN.md)
-6. [benchmark/EXPERIMENT_RESULT_LEDGER.md](benchmark/EXPERIMENT_RESULT_LEDGER.md)
-7. [benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md](benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md)
-8. [../status/2026-04-29_G_plus_LEGO_full92_result.md](../status/2026-04-29_G_plus_LEGO_full92_result.md)
-9. [../status/2026-04-29_benchmark_v2_expanded400.md](../status/2026-04-29_benchmark_v2_expanded400.md)
+5. [benchmark/BENCHMARK_V2_PROMOTION_CANDIDATES.md](benchmark/BENCHMARK_V2_PROMOTION_CANDIDATES.md)
+6. [benchmark/ORIGINAL92_DUPLICATE_AUDIT.md](benchmark/ORIGINAL92_DUPLICATE_AUDIT.md)
+7. [benchmark/BENCHMARK92_TASKFORM_OPTIMIZATION.md](benchmark/BENCHMARK92_TASKFORM_OPTIMIZATION.md)
+8. [benchmark/EVAS_SPECTRE_TIMING_PLAN.md](benchmark/EVAS_SPECTRE_TIMING_PLAN.md)
+9. [benchmark/EXPERIMENT_RESULT_LEDGER.md](benchmark/EXPERIMENT_RESULT_LEDGER.md)
+10. [benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md](benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md)
+11. [../status/2026-04-29_G_plus_LEGO_full92_result.md](../status/2026-04-29_G_plus_LEGO_full92_result.md)
+12. [../status/2026-04-29_benchmark_v2_expanded400.md](../status/2026-04-29_benchmark_v2_expanded400.md)
+13. [../status/2026-04-30_benchmark_balanced_expansion.md](../status/2026-04-30_benchmark_balanced_expansion.md)
 
 ## 3. 架构与方法
 
