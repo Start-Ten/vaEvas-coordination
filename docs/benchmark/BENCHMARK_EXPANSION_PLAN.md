@@ -1,178 +1,96 @@
-# Benchmark Expansion Plan: 46 → 200 Tasks
+# Benchmark Expansion Plan
 
-This document describes the phased strategy for expanding the vaEvas benchmark from the current 46 tasks to a target of 200 verified tasks across all four task families.
+日期：2026-04-29
 
----
+## 当前阶段定位
 
-## Benchmark Structure
+之前的 benchmark expansion 文档还停留在早期 46-task 阶段。现在项目已经进入新的阶段：
 
-The vaEvas benchmark has **four task families**, each testing a different AI capability:
+`以原始 92 个 benchmark 为 seed，构建更大的 perturbation + external architecture benchmark。`
 
-| family | what it tests | AI output | key checks |
-|---|---|---|---|
-| `end-to-end` | spec → DUT + TB + simulation | `.va` + `.scs` | compile + sim_correct + EVAS↔Spectre parity |
-| `spec-to-va` | spec → DUT only | `.va` | compile + behavioral correctness |
-| `bugfix` | fix a broken `.va` | corrected `.va` | compile + bug actually fixed |
-| `tb-generation` | write a testbench for a given DUT | `.scs` | TB compile + waveform produced |
+执行细则以 [BENCHMARK_EXPANSION_ASSIGNMENT.md](BENCHMARK_EXPANSION_ASSIGNMENT.md) 为准。
 
-All four families count toward the 200-task target.
+## 为什么要扩展
 
----
+原始 92 个任务太少，且已经被我们用于大量闭环调试、teacher replay、completion package 和 RAG 机制沉淀。
 
-## Guiding Constraints
+因此它适合回答：
 
-All benchmark tasks must satisfy:
+1. EVAS 闭环能不能降低验证成本？
+2. teacher/template 能不能完成闭集任务？
+3. 哪些失败属于电路行为，哪些属于 checker/runner/infra？
 
-1. **EVAS-compatible (voltage-domain only)**
-   - Uses `V() <+`, `@(cross(...))`, `@(initial_step)`, `@(timer(...))`, `transition()`
-   - Does NOT use `I() <+`, `ddt()`, `idt()`, `idtmod()`, `laplace_nd()`, `slew()`, `flicker_noise()`
-2. **`end-to-end` tasks require EVAS + Spectre parity** (`parity_required: true`)
-3. **Every task has at least 2 meaningful `sim_correct` checks** (no `manual_review_expected_output` placeholders)
-4. **Every task needs a gold reference answer** before it can be used to evaluate AI models
-5. **Tier progression**: `raw → verified` requires EVAS run + (for end-to-end) Spectre cross-check
+但它不够回答：
 
----
+1. 这些机制是否真正泛化？
+2. RAG 是不是只记住了 task_id 或固定信号名？
+3. 换参数、换接口、换描述后还能不能 pass？
+4. 从公开 Verilog-A/analog behavioral model 中抽取的新架构能不能被纳入同一验证流程？
 
-## Current State (as of 2026-04-05)
+benchmark-v2 的任务就是补上这部分证据。
 
-| family | total tasks | verified | raw/pending | gold answer exists |
-|---|---|---|---|---|
-| `end-to-end` | 26 | 6 | 20 | 21 (examples) |
-| `spec-to-va` | 12 | 0 | 12 | 0 (all `manual_review`) |
-| `bugfix` | 4 | 0 | 4 | 0 |
-| `tb-generation` | 4 | 0 | 4 | 0 |
-| **total** | **46** | **6** | **40** | **21** |
+## 两条扩展路线
 
-**Critical gap**: spec-to-va, bugfix, tb-generation have no gold answers and no automated checks — the two students' first job is to close this gap.
+### 路线 A：92 seed perturbation
 
----
+从原始 92 出发，做：
 
-## Phase 1: Close Infrastructure Gaps + First Verification Wave (target: ~80 tasks)
+1. 命名扰动；
+2. 参数扰动；
+3. 接口顺序扰动；
+4. 描述方式扰动；
+5. 负约束扰动；
+6. 系统组合扰动。
 
-**Goal**: make all 46 existing tasks evaluatable (have gold + automated checks), then push to verified.
+任务应先放入：
 
-### Step 1a: Gold answers + automated checks (students' work)
+`behavioral-veriloga-eval/benchmark-v2/tasks/`
 
-| family | tasks needing gold | responsible |
-|---|---|---|
-| `spec-to-va` | all 12 | shenbufan (digital/pll) + liangyuxuan (adc/dac) |
-| `bugfix` | all 4 | shenbufan |
-| `tb-generation` | all 4 | liangyuxuan |
+### 路线 B：external architecture intake
 
-Concretely: replace every `manual_review_expected_output` in `checks.yaml` with a real behavioral check. Write the gold `.va` or `.scs` file.
+从公开资料中寻找能转成 Verilog-A benchmark 的机制，例如：
 
-### Step 1b: EVAS + Spectre parity (end-to-end tasks, students' work)
+1. comparator / hysteresis / offset search；
+2. sample-hold / aperture / droop；
+3. oscillator / timer-based VCO / divider；
+4. DAC / ADC / calibration；
+5. PFD / lock detector；
+6. nonlinear sensor / threshold detector；
+7. simple stateful switching model。
 
-20 end-to-end tasks are `raw/pending`. Both students run EVAS + Spectre on their assigned tasks to push them to `verified`.
+外部来源必须记录 URL、许可证、转化方式和是否可公开。
 
-### Step 1c: Add ~34 new tasks (from existing examples)
+## 验收标准
 
-Each of the 21 examples can produce 3–4 tasks by varying difficulty. Target: +34 end-to-end tasks.
+一个新任务只有满足以下条件，才算 benchmark candidate：
 
-| example | new variants |
-|---|---|
-| comparator | hysteresis, offset-search, strongarm, rail-to-rail |
-| dac_binary_clk_4b | 6b, 8b, with mismatch |
-| sar_adc_dac_weighted_8b | 10b, with noise, with offset |
-| lfsr | 16b, 23b, with enable |
-| gray_counter_4b | 8b, with load, async reset |
-| flash_adc_3b | 4b, with offset |
-| pfd_updn | with dead-zone, with reset delay |
-| serializer_8b | deserializer_8b, 16b |
-| (others) | 1–2 variants each |
+1. 有 `prompt.md`；
+2. 有 `gold/dut.va`；
+3. 有 `gold/tb_ref.scs`；
+4. 有 `checker.py`；
+5. 有 `meta.json`；
+6. EVAS PASS；
+7. Spectre PASS；
+8. 没有 gold 泄漏；
+9. 失败模式可自动分类。
 
-**Phase 1 total: ~80 tasks**
+## 近期目标
 
----
+第一阶段目标不是直接扩到几百个，而是先做一批高质量样本：
 
-## Phase 2: New Circuit Domains (target: ~130 tasks)
+| batch | source | target |
+|---|---|---:|
+| v2-seed-perturbation | 原始 92 扰动 | 60 |
+| v2-external-architecture | 公开资料转化 | 20 |
+| v2-hard-negative | 负约束/陷阱任务 | 20 |
+| total |  | 100 |
 
-**Goal**: add 5 new circuit categories with full example + task coverage.
+每批都必须保留 EVAS/Spectre 验证摘要。
 
-| new category | representative circuits | est. tasks |
-|---|---|---|
-| oscillator | ring_osc_3stage, vco_behavioral (timer-based), relaxation_osc | 12 |
-| frequency-divider | div2, div4, dual_modulus_div | 8 |
-| encoder-decoder | priority_encoder_4b, therm2bin_8b, manchester_encoder | 10 |
-| pipeline-logic | 4-stage pipeline register, forwarding logic | 8 |
-| power-switch | behavioral transmission gate, programmable gain switch | 8 |
+## 与论文关系
 
-For each new category: write example → define tasks across all 4 families (end-to-end + spec-to-va variants + bugfix with introduced bugs + tb-generation).
+论文叙事应这样组织：
 
-**Phase 2 net new tasks: ~46 → total ~130**
-
----
-
-## Phase 3: System-Level + AI-Driven Curation (target: ~200 tasks)
-
-### System-level end-to-end tasks (~20)
-
-| system | components | difficulty |
-|---|---|---|
-| charge-pump PLL behavioral | PFD + CP + divider + VCO | hard |
-| delta-sigma modulator 1st order | accumulator + 1b DAC + feedback | hard |
-| pipelined ADC 2-stage | MDAC×2 + flash + digital correction | expert |
-| serializer + CDR | serializer + clock recovery | hard |
-
-### AI-generation-driven tasks (~30)
-
-Once the evaluation pipeline is running, high-quality AI outputs that pass all checks can be curated into the benchmark:
-
-```
-model output → EVAS compile + sim_correct → Spectre parity → human review → benchmark PR
-```
-
-This directly supports the paper claim: "our framework enables AI-assisted benchmark construction."
-
-**Phase 3 net new tasks: ~50 → total ~200**
-
----
-
-## Target Distribution at 200
-
-| family | target count |
-|---|---|
-| `end-to-end` | 80 |
-| `spec-to-va` | 60 |
-| `bugfix` | 30 |
-| `tb-generation` | 30 |
-| **total** | **200** |
-
-| category | target count |
-|---|---|
-| digital-logic | 30 |
-| data-converter | 35 |
-| pll-closed-loop | 20 |
-| phase-detector | 15 |
-| oscillator | 15 |
-| sample-hold | 10 |
-| calibration | 10 |
-| stimulus | 10 |
-| measurement | 10 |
-| encoder-decoder | 15 |
-| comms | 15 |
-| power-switch | 10 |
-| **total** | **~195** |
-
----
-
-## Bottleneck Analysis
-
-| bottleneck | mitigation |
-|---|---|
-| spec-to-va has no automated checks | students write gold `.va` + convert checks |
-| every new example needs EVAS + Spectre validation | batch by category; reuse testbench templates |
-| bugfix gold answers require domain knowledge | start from known EVAS pitfalls (wrong genvar/integer, missing transition) |
-| AI-driven tasks need human review gate | require all 3 executable checks to pass before merging |
-
----
-
-## Assignment Summary
-
-| phase | who |
-|---|---|
-| Phase 1 gold answers + parity | shenbufan + liangyuxuan (historical assignment archived in `../archive/2026-04-pre-paper-pivot/project/WORK_ASSIGNMENT.md`) |
-| Phase 1 new example variants | automated (Claude Code) |
-| Phase 2 new circuit categories | Claude Code + team review |
-| Phase 2–3 parity validation | students |
-| AI model evaluation runs | full team |
+1. 原始 92：用于 A/D/F/G/I 和 closed-set completion。
+2. benchmark-v2：用于证明机制模板/RAG/EVAS 闭环是否能迁移。
+3. external architecture：用于说明 vaEvas 不只服务现有 92，而能支持持续构建 analog behavioral benchmark。

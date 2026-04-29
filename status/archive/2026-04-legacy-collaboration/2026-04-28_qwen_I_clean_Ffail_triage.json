@@ -1,0 +1,724 @@
+{
+  "source_result_root": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28",
+  "failures": [
+    {
+      "task_id": "adc_dac_ideal_4b_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:6,inserted:1,signals:8",
+        "generated_dut_alias=adc_ideal_4b.va->adc_dac_4b.va",
+        "spectre_strict:conditional_cross=adc_dac_4b.va:19:conditional_block",
+        "spectre_strict:embedded_declaration=adc_dac_4b.va:23:real vin_sampled;,adc_dac_4b.va:24:integer raw_code;"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/adc_dac_ideal_4b_smoke/result.json"
+    },
+    {
+      "task_id": "adpll_lock_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:4",
+        "generated_include=adpll_va_idtmod.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "streaming_checker:late_edge_ratio=1.000 lock_time=nan vctrl_range_ok=True"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/adpll_lock_smoke/result.json"
+    },
+    {
+      "task_id": "adpll_ratio_hop_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:6",
+        "generated_include=adpll_ratio_hop_ref.va",
+        "spectre_strict:embedded_declaration=adpll_ratio_hop_ref.va:111:real current_fb_phase;,adpll_ratio_hop_ref.va:112:real ref_phase;,adpll_ratio_hop_ref.va:113:real error;"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/adpll_ratio_hop_smoke/result.json"
+    },
+    {
+      "task_id": "adpll_timer",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:4",
+        "spectre_strict:embedded_declaration=adpll_timer_ref.va:81:real phase_error;,adpll_timer_ref.va:121:real phase_error;"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/adpll_timer/result.json"
+    },
+    {
+      "task_id": "adpll_timer_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:4",
+        "generated_include=adpll_timer_ref.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "streaming_checker:late_edge_ratio=8.000 lock_time=nan vctrl_range_ok=False"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/adpll_timer_smoke/result.json"
+    },
+    {
+      "task_id": "bbpd_data_edge_alignment_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:5",
+        "generated_include=bbpd_data_edge_alignment_ref.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "too_few_updn_pulses=1"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/bbpd_data_edge_alignment_smoke/result.json"
+    },
+    {
+      "task_id": "bg_cal",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:9",
+        "spectre_strict:embedded_declaration=bg_cal.va:40:integer old_trim;"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/bg_cal/result.json"
+    },
+    {
+      "task_id": "cdac_cal",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 0.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.0
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:5",
+        "spectre_strict:preflight_pass",
+        "returncode=1",
+        "dut_not_compiled",
+        "tb_not_executed",
+        "tran.csv missing"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/cdac_cal/result.json"
+    },
+    {
+      "task_id": "clk_divider",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:12",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "ratio_code=5 in_edges=80 out_edges=8 lock_edges=1 final_lock_high=True period_match=0.000 interval_hist={10: 6}"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/clk_divider/result.json"
+    },
+    {
+      "task_id": "cmp_delay_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:6",
+        "generated_include=cmp_delay.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "behavior_eval_timeout>60s"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/cmp_delay_smoke/result.json"
+    },
+    {
+      "task_id": "comparator_offset_search_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_TB_COMPILE",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 0.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:3",
+        "generated_include=comparator_offset_search_ref.va",
+        "spectre_strict:preflight_pass",
+        "returncode=1",
+        "tb_not_executed",
+        "tran.csv missing"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/comparator_offset_search_smoke/result.json"
+    },
+    {
+      "task_id": "cppll_freq_step_reacquire_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:5",
+        "generated_include=cppll_timer_ref.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "streaming_checker:not_enough_edges ref=300 fb=0"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/cppll_freq_step_reacquire_smoke/result.json"
+    },
+    {
+      "task_id": "cppll_timer",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:5",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "not_enough_edges ref=250 fb=1"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/cppll_timer/result.json"
+    },
+    {
+      "task_id": "cppll_tracking_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:5",
+        "generated_include=cppll_timer_ref.va",
+        "spectre_strict:embedded_declaration=cppll_timer_ref.va:101:real phase_diff;"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/cppll_tracking_smoke/result.json"
+    },
+    {
+      "task_id": "cross_hysteresis_window_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:2",
+        "generated_include=cross_hysteresis_window_ref.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "low1=0.413 high=0.381 low2=0.357 span=1.800"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/cross_hysteresis_window_smoke/result.json"
+    },
+    {
+      "task_id": "d2b_4bit_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_TB_COMPILE",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 0.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:5",
+        "generated_include=d2b_4bit.va",
+        "spectre_strict:preflight_pass",
+        "returncode=1",
+        "tb_not_executed",
+        "tran.csv missing"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/d2b_4bit_smoke/result.json"
+    },
+    {
+      "task_id": "dac_binary_clk_4b_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:6",
+        "generated_include=dac_binary_clk_4b.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "streaming_checker:edge_sampled_levels=0 aout_span=0.000"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/dac_binary_clk_4b_smoke/result.json"
+    },
+    {
+      "task_id": "dwa_ptr_gen_no_overlap_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_TB_COMPILE",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 0.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:5,inserted:1,signals:35",
+        "generated_include=dwa_ptr_gen_no_overlap.va",
+        "spectre_strict:unsupported_tb_directives=10:single_quote,11:single_quote,14:single_quote,15:single_quote,16:single_quote,20:single_quote",
+        "spectre_strict:dynamic_analog_vector_index=dwa_ptr_gen_no_overlap.va:58:i:code_msb_i[i],dwa_ptr_gen_no_overlap.va:92:i:cell_en_o[i],dwa_ptr_gen_no_overlap.va:93:i:ptr_o[i]",
+        "spectre_strict:embedded_declaration=dwa_ptr_gen_no_overlap.va:79:integer idx;"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/dwa_ptr_gen_no_overlap_smoke/result.json"
+    },
+    {
+      "task_id": "dwa_ptr_gen_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:5,inserted:1,signals:34",
+        "generated_include=v2b_4b.va",
+        "generated_include=dwa_ptr_gen.va",
+        "spectre_strict:dynamic_analog_vector_index=dwa_ptr_gen.va:31:i:code_msb_i[i],dwa_ptr_gen.va:40:i:ptr_o[i],dwa_ptr_gen.va:41:i:cell_en_o[i]"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/dwa_ptr_gen_smoke/result.json"
+    },
+    {
+      "task_id": "dwa_wraparound_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:6,inserted:1,signals:38",
+        "generated_include=dwa_wraparound_ref.va",
+        "spectre_strict:conditional_transition=dwa_wraparound_ref.va",
+        "spectre_strict:dynamic_analog_vector_index=dwa_wraparound_ref.va:35:i:code_i[i],dwa_wraparound_ref.va:47:i:ptr_o[i],dwa_wraparound_ref.va:49:i:ptr_o[i],dwa_wraparound_ref.va:56:i:cell_en_o[i],dwa_wraparound_ref.va:58:i:cell_en_o[i],dwa_wraparound_ref.va:66:i:cell_en_o[i],dwa_wraparound_ref.va:68:i:cell_en_o[i],dwa_wraparound_ref.va:73:i:cell_en_o[i],dwa_wraparound_ref.va:75:i:cell_en_o[i]",
+        "spectre_strict:embedded_declaration=dwa_wraparound_ref.va:61:integer start, end1, end2;"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/dwa_wraparound_smoke/result.json"
+    },
+    {
+      "task_id": "flash_adc_3b_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:5",
+        "generated_include=flash_adc_3b.va",
+        "spectre_strict:embedded_declaration=flash_adc_3b.va:20:real vin_val;,flash_adc_3b.va:21:real range;,flash_adc_3b.va:22:integer raw_code;"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/flash_adc_3b_smoke/result.json"
+    },
+    {
+      "task_id": "gain_extraction_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:4",
+        "generated_include=vin_src.va",
+        "generated_include=lfsr.va",
+        "generated_include=dither_adder.va",
+        "generated_include=gain_amp_fixed.va",
+        "spectre_strict:embedded_declaration=lfsr.va:27:integer new_bit;"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/gain_extraction_smoke/result.json"
+    },
+    {
+      "task_id": "gray_counter_4b_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:6",
+        "generated_include=gray_counter_4b.va",
+        "spectre_strict:conditional_cross=gray_counter_4b.va:23:conditional_block"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/gray_counter_4b_smoke/result.json"
+    },
+    {
+      "task_id": "lfsr_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:3",
+        "generated_include=lfsr.va",
+        "spectre_strict:embedded_declaration=lfsr.va:44:integer feedback;"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/lfsr_smoke/result.json"
+    },
+    {
+      "task_id": "multitone",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:1",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "max_err=0.2768"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/multitone/result.json"
+    },
+    {
+      "task_id": "nrz_prbs",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:2",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "transitions=1 complement_err=0.8962 swing=1.000"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/nrz_prbs/result.json"
+    },
+    {
+      "task_id": "parameter_type_override_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:1",
+        "generated_include=parameter_type_override_ref.va",
+        "spectre_strict:conditional_transition=parameter_type_override_ref.va"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/parameter_type_override_smoke/result.json"
+    },
+    {
+      "task_id": "pfd_deadzone_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:4",
+        "generated_include=pfd_updn.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "streaming_checker:up_frac_out_of_range=0.0000"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/pfd_deadzone_smoke/result.json"
+    },
+    {
+      "task_id": "pfd_reset_race_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:4",
+        "generated_include=pfd_updn.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "streaming_checker:up_first=0.0000 dn_first=0.0000 up_second=0.0000 dn_second=0.0000 up_pulses_first=0 dn_pulses_second=0 overlap_frac=0.0000"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/pfd_reset_race_smoke/result.json"
+    },
+    {
+      "task_id": "phase_accumulator_timer_wrap_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:2",
+        "generated_include=phase_accumulator_timer_wrap_ref.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "phase_span_too_small=0.000"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/phase_accumulator_timer_wrap_smoke/result.json"
+    },
+    {
+      "task_id": "prbs7",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:11",
+        "spectre_strict:embedded_declaration=prbs7_ref.va:33:integer new_bit;"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/prbs7/result.json"
+    },
+    {
+      "task_id": "ramp_gen_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:6",
+        "generated_include=ramp_gen.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "code_start=0 code_end=0"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/ramp_gen_smoke/result.json"
+    },
+    {
+      "task_id": "sar_adc_dac_weighted_8b_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_DUT_COMPILE",
+      "scores": {
+        "dut_compile": 0.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.3333
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:13",
+        "generated_include=sar_adc_weighted_8b.va",
+        "generated_include=dac_weighted_8b.va",
+        "generated_include=sh_ideal.va",
+        "spectre_strict:dynamic_analog_vector_index=dac_weighted_8b.va:18:i:din[i]",
+        "spectre_strict:embedded_declaration=dac_weighted_8b.va:14:real weighted_code;,dac_weighted_8b.va:15:integer i;",
+        "spectre_strict:conditional_cross=sar_adc_weighted_8b.va:17:conditional_block",
+        "spectre_strict:embedded_declaration=sar_adc_weighted_8b.va:21:real vin_norm;",
+        "spectre_strict:conditional_cross=sh_ideal.va:14:conditional_block"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/sar_adc_dac_weighted_8b_smoke/result.json"
+    },
+    {
+      "task_id": "segmented_dac",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:8",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "diff_range=0.000"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/segmented_dac/result.json"
+    },
+    {
+      "task_id": "serializer_frame_alignment_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:12",
+        "generated_include=serializer_frame_alignment_ref.va",
+        "spectre_strict:preflight_pass",
+        "returncode=1",
+        "tran.csv missing"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/serializer_frame_alignment_smoke/result.json"
+    },
+    {
+      "task_id": "therm2bin",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:19",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "streaming_checker:all_bits_high_final_window=False"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/therm2bin/result.json"
+    },
+    {
+      "task_id": "transition_branch_target_smoke",
+      "contract_family": "runtime_or_timeout",
+      "repair_template": "runtime-interface-minimal-harness",
+      "status": "FAIL_SIM_CORRECTNESS",
+      "scores": {
+        "dut_compile": 1.0,
+        "tb_compile": 1.0,
+        "sim_correct": 0.0,
+        "weighted_total": 0.6667
+      },
+      "notes": [
+        "contract_save_pruned=removed:1,inserted:1,signals:3",
+        "generated_include=transition_branch_target_ref.va",
+        "spectre_strict:preflight_pass",
+        "returncode=0",
+        "streaming_checker:means=(0.000,0.000,1.176,1.800)"
+      ],
+      "result_path": "results/condition-F-public-strictv3-evasloop-qwen-full92-materialized-evas-2026-04-28/transition_branch_target_smoke/result.json"
+    }
+  ]
+}

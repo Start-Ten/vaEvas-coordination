@@ -85,6 +85,36 @@ Optional but recommended:
 
 ---
 
+## Full92 Aggregate Remote A-I Runs
+
+For full benchmark A-I style runs, do not expand all 92 per-task rows here.
+Use the remote result pack as the source of truth:
+
+```text
+coordination/remote-results/2026-04-27_multi-model-a-i/
+```
+
+Before copying any aggregate number into a paper table, check the result status
+in [EXPERIMENT_RESULT_LEDGER.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/benchmark/EXPERIMENT_RESULT_LEDGER.md).
+The 2026-04-27 Kimi A/B/C current-regression rows are currently marked
+`invalid-baseline` because their generated roots contain dry-run placeholder
+artifacts.  The Kimi `I-cold-start v0=58/92` row is therefore provisional and
+should not be used as an official cold-start result until A/B/C are rerun clean.
+
+Aggregate rows currently planned:
+
+| run_group | owner | model_name | provider | conditions | split | status | aggregate_result_path | notes |
+|---|---|---|---|---|---|---|---|---|
+| `remote-a-i-2026-04-27` | shenbufan | `MiniMax-M2.5` or account-current MiniMax | Bailian/MiniMax | P0 probe, then A-G; H/I only after review | full92 | planned | `coordination/remote-results/2026-04-27_multi-model-a-i/RESULT_MATRIX.md` | Smoke first because prior MiniMax route had credential/model availability uncertainty. |
+| `remote-a-i-2026-04-27` | shenbufan | `doubao-<account-model>` | Volcengine | P0 adapter probe, then A-G if supported | full92 | planned | `coordination/remote-results/2026-04-27_multi-model-a-i/RESULT_MATRIX.md` | Current runner needs provider route confirmation before full92. |
+| `remote-a-i-2026-04-27` | shenbufan | `qwen3-coder-plus` | Bailian/Qwen | A-C, optional D/F | full92 | backup planned | `coordination/remote-results/2026-04-27_multi-model-a-i/RESULT_MATRIX.md` | Stable secondary comparison if MiniMax/Volcengine blocks. |
+| `remote-a-i-2026-04-27` | shenbufan | `qwen3.5-plus` | Bailian/Qwen | A-C, optional D/F | full92 | backup planned | `coordination/remote-results/2026-04-27_multi-model-a-i/RESULT_MATRIX.md` | Stable secondary comparison. |
+
+Fill detailed per-condition numbers in the remote matrix first, then promote
+paper-ready aggregate rows back into this file or the paper draft.
+
+---
+
 ## Fill Rules
 
 1. Use one row per `model x task x attempt`.

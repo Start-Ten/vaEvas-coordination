@@ -16,3 +16,5 @@ __pycache__/
 # Environment files
 .env
 .env.*
+*.env
+status/local-private/

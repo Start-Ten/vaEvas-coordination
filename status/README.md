@@ -1,21 +1,41 @@
-# status
+# Status
 
-这里记录：
+这里现在只保留当前主线状态，不再平铺所有历史协作记录。
 
-1. 每周状态
-2. 阶段进度
-3. 重要同步结论
+## 必读
 
-建议命名：
+1. [00_CURRENT_MAINLINE.md](00_CURRENT_MAINLINE.md)
+2. [../docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md](../docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md)
+3. [../docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md](../docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md)
+4. [2026-04-29_overnight_execution_summary.md](2026-04-29_overnight_execution_summary.md)
+5. [2026-04-29_remote_sync_final_version_manifest.md](2026-04-29_remote_sync_final_version_manifest.md)
+6. [2026-04-12_repo-visibility-note.md](2026-04-12_repo-visibility-note.md)
 
-1. `2026-04-03_weekly-status.md`
-2. `2026-04_phase-1-status.md`
+## 当前结果线
 
-当前可参考：
+1. [2026-04-28_ADFG_same_baseline_current.md](2026-04-28_ADFG_same_baseline_current.md)
+2. [2026-04-29_HI_sequence_results.md](2026-04-29_HI_sequence_results.md)
+3. [2026-04-29_closedset92_completion_ledger.md](2026-04-29_closedset92_completion_ledger.md)
+4. [2026-04-29_completion_package_audit.md](2026-04-29_completion_package_audit.md)
+5. [2026-04-29_completion_package_practice_validation.md](2026-04-29_completion_package_practice_validation.md)
 
-1. [2026-04-05_weekly-status.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/status/2026-04-05_weekly-status.md)
-2. [2026-04-08_onboarding-path-blocker.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/status/2026-04-08_onboarding-path-blocker.md)
-3. [2026-04-12_repo-visibility-note.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/status/2026-04-12_repo-visibility-note.md)
-4. [2026-04-13_progress-sync-from-behavioral-eval.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/status/2026-04-13_progress-sync-from-behavioral-eval.md)
+## Benchmark-v2 与 RAG
 
-如果你遇到“分工文档里有任务名，但本地 `behavioral-veriloga-eval` 看不到”的情况，优先看第 3 个文件。
+1. [2026-04-29_benchmark_v2_gold_validation.md](2026-04-29_benchmark_v2_gold_validation.md)
+2. [2026-04-29_circuit_mechanism_rag_audit.md](2026-04-29_circuit_mechanism_rag_audit.md)
+3. [2026-04-29_mechanism_skeleton_coverage.md](2026-04-29_mechanism_skeleton_coverage.md)
+4. [2026-04-29_rag_upgrade_notes.md](2026-04-29_rag_upgrade_notes.md)
+5. [2026-04-29_gold_r26_template_generalization.md](2026-04-29_gold_r26_template_generalization.md)
+
+## 计划与清理
+
+1. [2026-04-29_overnight_closedset_rag_benchmark_plan.md](2026-04-29_overnight_closedset_rag_benchmark_plan.md)
+2. [2026-04-29_cleanup_protect_manifest.json](2026-04-29_cleanup_protect_manifest.json)
+
+## 归档
+
+旧 A/B 协作、Terminal B prompt、早期 H/I 调试、fail 列表、旧 qwen/kimi 探索结果已移到：
+
+1. [archive/2026-04-legacy-collaboration/](archive/2026-04-legacy-collaboration/)
+
+这些文件只用于追溯，不再作为当前主线入口。

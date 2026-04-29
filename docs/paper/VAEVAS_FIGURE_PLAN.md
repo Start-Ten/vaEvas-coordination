@@ -71,9 +71,12 @@ flowchart TB
 Suggested visual style:
 
 1. Use a staircase or ladder.
-2. Put pass counts next to completed steps: A 18/92, D 48/92, F 58/92, H 59/92.
-3. Mark I as "ongoing / TBD" rather than an established result.
-4. Mark B/C/E/G as small side ablation bubbles, not in the main path.
+2. Put pass counts next to completed steps only after checking
+   `coordination/docs/benchmark/EXPERIMENT_RESULT_LEDGER.md`.
+3. Current safe labels: A clean-candidate 35/92, D 55/92, F 61/92,
+   H-on-F 65/92.  Mark current Kimi A/B/C as invalid-baseline.
+4. Mark I-cold-start v1 as "ongoing / TBD" rather than using provisional v0.
+5. Mark B/C/E/G as small side ablation bubbles, not in the main path.
 
 ## Figure 3: Failure Taxonomy and Feedback Quality
 
@@ -125,6 +128,6 @@ Current placeholders:
 
 | Model | Raw EVAS | Best F/H EVAS | Spectre/Virtuoso | Dominant failures | Notes |
 |---|---:|---:|---:|---|---|
-| Kimi | 18/92 | F: 58/92; H: 59/92 | TBD | Behavior failures after repair | Current primary snapshot |
-| Qwen | 25/92 | TBD | TBD | TBD | Needs current-system refresh |
+| Kimi | clean-candidate 35/92; current 20/92 invalid | F: 61/92; H-on-F: 65/92 | TBD | Behavior failures after repair | Current A/B/C is placeholder-contaminated; use ledger. |
+| Qwen | clean-candidate 25/92; current 26/92 | F: 28/92 | TBD | TBD | G current has incomplete samples. |
 | GPT-5.5/API model | TBD | TBD | TBD | TBD | Requires reproducible API entry |

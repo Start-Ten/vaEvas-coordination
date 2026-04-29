@@ -1,18 +1,20 @@
 # vaEvas: Fast EVAS-Guided Closed-Loop Repair for LLM-Generated Verilog-A Behavioral Models
 
-Status: working English manuscript draft, refreshed on 2026-04-26.
+Status: working English manuscript draft, result-hygiene refreshed on 2026-04-29.
 
-This draft supersedes the earlier framework-only draft. The current paper story is not only that `vaEvas` builds a benchmark, but that EVAS enables a fast executable feedback loop for improving LLM-generated Verilog-A. Empty result cells are intentional and should be filled after the next Spectre/Virtuoso validation pass.
+This draft supersedes the earlier framework-only draft. The current paper story is not only that `vaEvas` builds a benchmark, but that EVAS enables a fast executable feedback loop for improving LLM-generated Verilog-A. The core thesis is now twofold: EVAS is behaviorally aligned with Spectre/Virtuoso on voltage-domain behavioral tasks while being fast enough to serve as the inner repair loop, and the same low-cost executable verifier can also generate verified trajectories and mechanism templates for post-training or reinforcement-style optimization. Empty result cells are intentional and should be filled after the next Spectre/Virtuoso validation pass.
 
 Chinese counterpart: [VAEVAS_PAPER_DRAFT_ZH.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/paper/VAEVAS_PAPER_DRAFT_ZH.md)
 
-Supporting snapshot: [LATEST_SYSTEM_SNAPSHOT_2026-04-26.md](/Users/bucketsran/Documents/TsingProject/vaEvas/behavioral-veriloga-eval/docs/project/LATEST_SYSTEM_SNAPSHOT_2026-04-26.md)
+Result ledger: [EXPERIMENT_RESULT_LEDGER.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/benchmark/EXPERIMENT_RESULT_LEDGER.md)
+
+Clean condition matrix: [CLEAN_EXPERIMENT_CONDITION_MATRIX.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/benchmark/CLEAN_EXPERIMENT_CONDITION_MATRIX.md)
 
 ---
 
 ## Abstract
 
-Large language models can produce plausible Verilog-A code, but direct text generation is unreliable for analog and mixed-signal behavioral models: candidates may fail to compile, instantiate incompatible testbenches, or simulate but violate the intended behavior. Industrial simulators such as Spectre/Virtuoso can validate these failures, but their runtime cost makes them unsuitable as the inner loop of repeated LLM repair. We present `vaEvas`, an EVAS-guided framework for executable evaluation and closed-loop repair of LLM-generated Verilog-A behavioral models. The key observation is that EVAS can provide behaviorally consistent results with Spectre/Virtuoso while running fast enough to support high-throughput generate-simulate-repair iterations. In `vaEvas`, each candidate is compiled, simulated, checked against task-specific behavioral contracts, and repaired using structured EVAS feedback. On a 92-task benchmark, a raw Kimi baseline solves 18 tasks, while multi-round EVAS repair solves 58 tasks; a signature-guided repair prototype further reaches 59 tasks under the current formal snapshot. An ongoing extension aligns public task contracts with assertion-style checker feedback, so that repair can target the specific behavioral contract that was violated rather than only a coarse pass/fail outcome. These EVAS-side results are complemented by a planned Spectre/Virtuoso acceptance table to verify that the gains transfer to the industrial simulator. Our results suggest that fast executable feedback is a necessary ingredient for reliable LLM-based Verilog-A generation.
+Large language models can produce plausible Verilog-A code, but direct text generation is unreliable for analog and mixed-signal behavioral models: candidates may fail to compile, instantiate incompatible testbenches, or simulate but violate the intended behavior. Industrial simulators such as Spectre/Virtuoso can validate these failures, but their runtime cost makes them unsuitable as the inner loop of repeated LLM repair or large-scale candidate filtering. We present `vaEvas`, an EVAS-guided framework for executable evaluation and closed-loop repair of LLM-generated Verilog-A behavioral models. The key observation is that, on the voltage-domain behavioral tasks studied here, EVAS can provide behaviorally consistent results with Spectre/Virtuoso while running fast enough to support high-throughput generate-simulate-repair iterations. In `vaEvas`, each candidate is compiled, simulated, checked against task-specific behavioral contracts, and repaired using structured EVAS feedback. This supports two uses: inference-time closed-loop repair, evaluated through the A/D/F/G/H/I condition ladder, and low-cost teacher-data construction, where verified artifacts and repair trajectories are distilled into reusable mechanism templates for future supervised or reinforcement-style optimization. Our current result ledger separates clean baselines, incremental repair evidence, engineering admission evidence, teacher-data evidence, and invalid/provisional runs. The results suggest that fast executable feedback is a necessary ingredient for reliable LLM-based Verilog-A generation and for scalable post-training data construction.
 
 ## 1. Introduction
 
@@ -26,12 +28,15 @@ Our central thesis is:
 
 > EVAS makes executable LLM repair practical because it is behaviorally aligned with Spectre/Virtuoso while being fast enough to serve as the inner loop of generate-simulate-repair optimization.
 
+This thesis yields two paper threads. The first is inference-time repair: EVAS replaces Spectre as the high-throughput inner-loop feedback engine, while Spectre/Virtuoso remains the final acceptance reference. The second is data construction: because EVAS can validate many candidates, perturbations, and repair attempts cheaply, it can generate verified failure trajectories, repair trajectories, pass/fail preference pairs, and mechanism templates for later supervised fine-tuning, DPO/RLHF-style preference optimization, or mechanism-card retrieval.
+
 This paper makes four contributions.
 
 1. We introduce a 92-task executable Verilog-A generation benchmark with task prompts, generated artifacts, testbenches, and three-layer scoring: DUT compile, testbench compile, and simulation correctness.
 2. We propose an EVAS-guided closed-loop repair workflow that turns simulator feedback into repair signals for LLM-generated Verilog-A.
-3. We evaluate a staged condition matrix showing that EVAS feedback substantially improves over raw prompting, from 18/92 raw-pass tasks to 58/92 with multi-round EVAS repair in the current Kimi snapshot.
-4. We develop signature-guided repair, contract-aligned assertion feedback, and validated fast checkers as a path toward higher-quality feedback, while keeping Spectre/Virtuoso acceptance as the final validation target.
+3. We evaluate a staged A/D/F/G/H/I condition matrix that isolates raw prompting, public Verilog-A compatibility rules, single-round EVAS repair, multi-round EVAS repair, compile-clean repair, signature-guided repair, and contract/mechanism-card repair.
+4. We develop signature-guided repair, contract-aligned assertion feedback, reusable mechanism cards, and validated fast checkers as a path toward higher-quality feedback, while keeping Spectre/Virtuoso acceptance as the final validation target. The experience layer is designed to transfer as mechanism templates rather than as task-specific answers.
+5. We show how verified gold/R26 closure artifacts can be audited as teacher data: type-level mechanism templates are extracted from passing artifacts and validated under parameter perturbations before being considered for future training or retrieval.
 
 The current draft reports EVAS-side results first because they are the basis of rapid iteration. The final paper should also include Spectre/Virtuoso acceptance for the main conditions and an EVAS-vs-Spectre behavior-consistency table.
 
@@ -75,6 +80,10 @@ The intended evidence chain is:
 4. confirm the key improvements in Spectre/Virtuoso.
 
 This distinction matters. If EVAS were merely faster but not behaviorally aligned, its feedback would not be trustworthy. If EVAS were aligned but not faster, it would not enable high-frequency repair. The contribution requires both properties.
+
+This also clarifies how to read the A/D/F/G/H/I table. The table is not mainly a prompt-engineering leaderboard. It measures how different forms of EVAS feedback change the generation process: A has no execution feedback; D/F add one or multiple EVAS repair rounds; G attempts to eliminate compile, interface, and artifact-surface failures before deeper behavior repair; H/I turn EVAS notes into signatures, contracts, and mechanism-card guidance. The intended claim is that fast, aligned executable feedback turns generation from a one-shot guess into an optimizable process.
+
+The same property enables post-training data construction. Spectre/Virtuoso is the right final acceptance reference, but using it to generate thousands of candidate trajectories, repair trajectories, parameter perturbations, and pass/fail preference pairs is expensive. EVAS can act as the scalable verifier for this data-generation layer, with Spectre/Virtuoso reserved for targeted acceptance and calibration.
 
 ### 2.3 Relation to Assertion-Based Verification
 
@@ -189,9 +198,9 @@ The H condition is not intended to hard-code individual benchmark answers. Inste
 
 Only templates that rescue multiple tasks under signature-gated triggering should be promoted into the formal method. Single-task rescues should be recorded as exploratory evidence.
 
-### 4.5 Contract-Aligned Assertion-Guided Repair (Ongoing)
+### 4.5 Contract-Aligned Assertion-Guided Repair
 
-The ongoing next layer can be treated as condition I. It addresses a weakness of H: even structured failure signatures may not clearly identify which public task contract was violated. Condition I therefore binds the public task contract to assertion-style checker feedback.
+The ongoing next layer can be treated as condition I. It addresses a weakness of H: even structured failure signatures may not clearly identify which public task contract was violated. Condition I therefore binds the public task contract, assertion-style checker feedback, and mechanism cards.
 
 The intended loop has three layers:
 
@@ -199,7 +208,76 @@ The intended loop has three layers:
 2. **Executable assertion layer.** The public contract is translated into EVAS-checkable predicates, such as code coverage, cadence ratio, pulse width, lock window, or sequence alignment.
 3. **Repair feedback layer.** When EVAS fails, the repair prompt reports the violated contract item, observed value, target range, and likely module or signal region.
 
-This follows the verification-quality lesson from OpenLLM-RTL, but uses assertions at repair time rather than as a training-data filter. Because I is still under optimization, this draft treats it as a planned condition rather than an established pass-rate result.
+This follows the verification-quality lesson from OpenLLM-RTL, but uses assertions at repair time rather than as a training-data filter. Condition I does not expose hidden checker code, gold traces, or task-specific answers to the model. It converts public prompts, public observables, and simulation-measured failure vectors into more actionable repair targets.
+
+### 4.6 Experience Distillation and Cold-Start Repair
+
+The experience in `vaEvas` should not be understood as saving locally passing task code, nor as hand-writing a dedicated `contracts.json` for every benchmark case. Transferable experience is restricted to four reusable asset types:
+
+1. **Verilog-A skills:** general EVAS-compatible coding rules, event usage, timer scheduling, and transition discipline;
+2. **contract types:** reusable checks such as `edge_count`, `output_span`, `code_coverage`, `frequency_ratio`, `paired_edge_response`, and `differential_range`;
+3. **prompt-driven mechanism inference:** rules that infer ADC/DAC, PFD, PLL, serializer, Gray-counter, and related mechanism families from public prompts and observables;
+4. **mechanism cards:** mappings from contract failure vectors to generic repair strategies, such as repairing an ADC-DAC quantization/reconstruction chain when input activity exists but code/output coverage fails.
+
+A new environment therefore does not need the current local `results/` history before it can use the loop. The cold-start workflow is:
+
+```text
+public prompt + reusable skill/mechanism templates
+  -> first generation and EVAS scoring
+  -> result.json, notes, tran.csv, and compile logs
+  -> prompt/public-signal/failure-driven contracts.json
+  -> contract_check mechanism-level failure vector
+  -> mechanism-card selection and repair prompt construction
+  -> repeated scoring until an independently passing artifact appears
+  -> materialization runner and full benchmark re-score
+```
+
+This makes experience a localization and repair prior, not an answer cache. Without prior run history, the first round relies on prompt-driven contracts and reusable skills. After one failed run, the loop creates its own instance-specific evidence and can repair with finer guidance. This is also the main overfitting guardrail: new knowledge should be added at the mechanism-family level, not at the task-name level.
+
+### 4.7 EVAS as a Post-Training Data Engine
+
+EVAS also makes post-training data construction cheaper. For Verilog-A, the valuable data is not just more text; it is executable trajectory data: which candidates compile, which candidates simulate, which syntactically valid candidates fail behavior, which repair converts `only_2_codes` into full code coverage, and which mechanism template remains correct under parameter perturbation.
+
+The EVAS-generated data can be organized into four reusable forms:
+
+| Data form | Source | Possible use |
+|---|---|---|
+| Pass/fail preference pair | Multiple candidates for the same prompt scored by EVAS/checkers | DPO/RLHF-style preference learning toward executable correctness. |
+| Repair trajectory | Failed artifact, EVAS feedback, repair prompt, next result | SFT on simulation-guided repair behavior. |
+| Mechanism template | Type-level pattern distilled from gold/R26 passing artifacts | Mechanism cards, retrieval, skeleton generation, or curriculum data. |
+| Parameterized variant | Revalidated perturbations of period, code, VDD, window, or bit width | Anti-overfitting test and near-neighbor benchmark construction. |
+
+This is why the historical 92/92 R26 closure remains useful even though it should not be reported as a cold-start pass rate. It can be treated as a teacher-data source. We can extract how PLL feedback cadence is maintained, how DWA pointer/window state is coupled, how PFD UP/DN pulses are made mutually exclusive, or how ADC/DAC quantization and reconstruction share one code. The new gold/R26 template generalization audit follows this idea: four mechanism templates are extracted from verified R26 artifacts and revalidated under parameter perturbations, currently passing 14/14 EVAS variants. This suggests that at least part of the historical closure can be converted into transferable teacher signals rather than task-specific patches.
+
+### 4.8 Toward Circuit-Mechanism RAG
+
+The current mechanism cards are an auditable intermediate layer: they translate EVAS/contract failure vectors into short repair guidance. In a larger system, however, mechanism cards should not remain a manually curated rule list. They are better viewed as structured knowledge nodes inside a circuit-mechanism retrieval system. The retrieval key should not be a task name or a single keyword, but a circuit relation graph derived from the public prompt, port roles, observables, EVAS notes, and contract failures.
+
+A future circuit-mechanism RAG knowledge base can be organized into three layers:
+
+| Knowledge layer | Content | Role |
+|---|---|---|
+| Circuit knowledge | Principles and submodule relations for ADCs, PLLs, PFDs, DWA, SAR/CDAC, calibration, and mixed-signal sequencing | Supplies system-level constraints beyond single-signal checks. |
+| Mechanism templates | Relations such as `quantize-reconstruct`, `feedback-divider-lock`, `pointer-window-enable`, and `edge-order-pulse` | Compresses circuit principles into reusable implementation constraints. |
+| Failure trajectories | EVAS notes, contract failure vectors, failed code shapes, and successful repair strategies | Retrieves concrete repair evidence for the current failure. |
+
+The intended flow is:
+
+```text
+public prompt + ports + EVAS notes/tran.csv
+  -> functional IR / circuit relation graph
+  -> retrieve similar mechanisms, failures, and verified variants
+  -> compress retrieved evidence into mechanism-card guidance
+  -> LLM repair
+  -> EVAS verify
+  -> write back successful and failed trajectories
+```
+
+In this design, mechanism cards remain useful, but their role changes. They are not the final knowledge base; they are the controlled summary format for retrieved evidence. RAG can retrieve richer circuit knowledge, gold/R26 templates, parameter sweeps, and prior failure trajectories, while the mechanism card compresses the result into a concise, non-leaky, auditable repair hint. This also addresses the limitation of the current deterministic selector by moving from keyword matching toward functional graph matching and similar-failure retrieval.
+
+A first pilot confirms that retrieval quality and repair success must be evaluated separately. On 23 no-API retrieval cases, adding functional IR, R26 mechanism nodes, and DWA-specific guards gives 20/20 positive top-3 hits, but still leaves 5/23 forbidden top-3 retrievals; this motivates a final negative guard before retrieved evidence is injected into repair prompts. We then ran a small end-to-end repair pilot on eight final-G residual failures. The diversified RAG prompt rescued `dwa_ptr_gen_no_overlap_smoke`: the G baseline failed behavior, RAG round 1 moved the design to an active but overlapping cell window (`max_active_cells=8`, `overlap_count=7`), and RAG round 2 reached `overlap_count=0`. After fixing a save-continuation staging bug, the repaired artifact passes both standard EVAS and real Spectre strict validation. A same-budget no-RAG DWA control did not pass in two rounds. This is pilot evidence rather than a full condition result, but it shows that R26/system-relation knowledge can be converted into a real new pass when retrieved and summarized correctly.
+
+We then made this experience layer more explicit by adding a `Circuit-Mechanism Skeleton` layer. The current skeleton library covers four R26/closure-derived mechanisms: DWA pointer-window enable, ADC-DAC quantize/reconstruct, PFD edge-pulse windows, and PLL feedback cadence. Each skeleton contains a slot schema, implementation skeleton, Verilog-A shape, and anti-patterns. During repair, the prompt now retrieves a skeleton first, then an R26 template, a repair card, and a prompt template. In the same eight-task pilot, Skeleton-RAG again rescues the DWA case and passes both standard EVAS and Spectre strict validation, but it does not yet rescue the harder PLL/ADC/PFD cases. This suggests that skeletons are a necessary intermediate representation, but the current form is still generic; the next layer should be a slot-bound skeleton generator that binds public port names, parameters, bit widths, reset polarity, save nodes, and metric gaps.
 
 ## 5. Experimental Setup
 
@@ -211,8 +289,8 @@ A model-comparison table should be reserved in the final paper to show whether t
 
 | Model | Condition A: raw-prompt EVAS | Best F/H EVAS repair | Spectre/Virtuoso acceptance | Dominant failure modes | Notes |
 |---|---:|---:|---:|---|---|
-| Kimi | 18/92 | F: 58/92; H: 59/92 | TBD | Behavior failures dominate after repair. | Current primary snapshot. |
-| Qwen | 25/92 | TBD | TBD | TBD | Needs refresh under the current system. |
+| Kimi | clean-candidate 35/92; current 20/92 invalid | current F: 61/92; H-on-F: 65/92 | TBD | Behavior failures dominate after repair. | 2026-04-27 A/B/C are placeholder-contaminated; I-cold-start v0 is provisional. |
+| Qwen | clean-candidate 25/92; current 26/92 | F: 28/92 | TBD | Validation/interface failures are more common. | G current has incomplete samples. |
 | GPT-5.5/API model | TBD | TBD | TBD | TBD | Requires a reproducible API entry. |
 | Other models | TBD | TBD | TBD | TBD | Include only after rerunning with the current system. |
 
@@ -248,33 +326,35 @@ The latest snapshot includes:
 
 ### 6.1 Main EVAS Matrix
 
-Current refreshed Kimi results:
+Current Kimi results, separated by evidence status:
 
 | Condition | Description | Pass@1 | Pass count |
 |---|---|---:|---:|
-| A | Raw prompt | 0.1957 | 18/92 |
-| B | Checker-transparent prompt | 0.2717 | 25/92 |
-| C | Checker + skill prompt | 0.2717 | 25/92 |
-| D | Single-round EVAS repair, no skill | 0.5217 | 48/92 |
-| E | Single-round EVAS repair + skill | 0.5109 | 47/92 |
-| F | Multi-round EVAS repair, no skill | 0.6304 | 58/92 |
-| G | Multi-round EVAS repair + skill | 0.5326 | 49/92 |
-| H | Signature-guided H-on-F prototype | 0.6413 | 59/92 |
-| I | Contract-aligned assertion-guided repair | TBD | TBD |
+| A/B/C current | Raw/checker/checker+skill prompt | mixed | 20/92, 29/92, 29/92; invalid-baseline |
+| A/B/C clean-candidate | 2026-04-25 historical baseline | 0.3804 / 0.4674 / 0.4022 | 35/92, 43/92, 37/92 |
+| D | Single-round EVAS repair, no skill | 0.5978 | 55/92 |
+| E | Single-round EVAS repair + skill | 0.5870 | 54/92 |
+| F | Multi-round EVAS repair, no skill | 0.6630 | 61/92 |
+| G | Multi-round EVAS repair + skill | 0.6304 | 58/92; incomplete-sample caveat |
+| H-on-F | Signature-guided H-on-F prototype | 0.7065 | 65/92; incremental evidence |
+| I-cold-start v0 | Contract-aligned replay from A failures | 0.6304 | 58/92; provisional |
+| I-runner / I-final | Materialization and closure evidence | 0.8043 / 1.0000 | 74/92 / 92/92; engineering evidence |
 
 The clearest trend is that executable EVAS feedback changes the regime. Static prompt changes improve over raw prompting, but the major jump comes from simulation-guided repair.
 
 ### 6.2 Recommended Main-Table Simplification with I Reserved
 
-For the paper's main story, A/D/F/H should present the completed evidence chain, while I should be reserved as the ongoing next method layer:
+For the paper's main story, clean A/D/F/H should present the completed evidence
+chain, while I-cold-start v1 should be reserved as the ongoing next method
+layer.  The current I-cold-start v0 is only a pipeline smoke result.
 
 | Condition | Pass count | Main claim |
 |---|---:|---|
-| A | 18/92 | Raw LLM generation is insufficient. |
-| D | 48/92 | One EVAS feedback round substantially improves generation. |
-| F | 58/92 | EVAS speed enables useful multi-round repair. |
-| H | 59/92 | Structured failure signatures begin to improve repair quality. |
-| I | TBD | Contract-aligned assertion feedback is being evaluated for the remaining behavior failures. |
+| A | 35/92 clean-candidate; 20/92 invalid current | Raw LLM generation is insufficient; final number requires clean rerun. |
+| D | 55/92 | One EVAS feedback round substantially improves generation. |
+| F | 61/92 | EVAS speed enables useful multi-round repair. |
+| H-on-F | 65/92 | Structured failure signatures improve residual repair. |
+| I-cold-start v1 | TBD | Contract-aligned assertion feedback must be rerun from a clean A anchor. |
 
 B/C/E/G remain useful ablations, but they should not distract from the main feedback loop.
 
@@ -293,7 +373,7 @@ The largest improvements occur in end-to-end and spec-to-VA tasks, where raw gen
 
 | Condition | Simulation correctness failures | DUT compile failures | TB compile failures | Other |
 |---|---:|---:|---:|---:|
-| A | 48 | 20 | 5 | 1 |
+| A current invalid | 48 | 20 | 5 | 1 |
 | D | 41 | 1 | 0 | 2 |
 | F | 31 | 1 | 0 | 2 |
 | H | 30 | 1 | 0 | 2 |
@@ -302,11 +382,11 @@ This table supports a nuanced claim. EVAS-guided repair sharply reduces compile 
 
 ### 6.5 H and H2 Evidence
 
-Condition H currently improves the formal Kimi snapshot from 58/92 to 59/92. The formal gain is modest, but it is meaningful because it demonstrates that failure-signature repair can transfer back to the formal scoring path. The strict H rescues observed in diagnostic settings include divider cadence, multimod divider cadence, and flash ADC code coverage.
+Condition H-on-F currently improves the clean current F repair evidence from 61/92 to 65/92. This should be interpreted as incremental repair evidence, not as a cold-start baseline. The rescues observed in diagnostic settings include divider cadence, multimod divider cadence, flash/ADC code coverage, edge liveness, and part of the PFD/PLL window family.
 
 H2 probes on the remaining failure set show that more tasks can be rescued when generated-testbench repair, validated fast checkers, and transferable DUT templates are combined. The conservative fast-default H2 failure-anchor result reaches 10/33 on the H-on-F failure set. This is not yet a full 92-task formal condition, but it identifies promising mechanisms for the next method iteration.
 
-### 6.6 I: Contract-Aligned Assertion Loop (Ongoing)
+### 6.6 I: Contract-Aligned Assertion Loop and Cold-Start Feasibility
 
 Condition I is the active optimization direction that aligns task contracts with checker/assertion feedback. It should not be confused with condition B. B statically exposes more checker information before generation; I uses executable assertion failures after EVAS simulation to guide repair.
 
@@ -316,6 +396,19 @@ The key questions to validate are:
 2. whether I turns coarse `FAIL_SIM_CORRECTNESS` outcomes into actionable contract violations;
 3. whether I improves the remaining F/H failure set without leaking gold implementation details;
 4. whether I's gains transfer to Spectre/Virtuoso acceptance.
+
+The current implementation validates the feasibility of the main components:
+
+| Component | Validation result | Meaning |
+|---|---:|---|
+| Prompt-driven mechanism inference | 57/57 validation matches | Mechanism templates can be triggered from public prompt evidence rather than task-name lookup. |
+| Prompt-driven contract generation | 29 tasks, 210 contracts | Failing diagnostic tasks can receive mechanism-level `contracts.json` automatically. |
+| Materialization runner | 9 base-fail PASS artifacts admitted | Independently verified repairs can be combined without manual copying. |
+| I-cold-start v0 replay | 58/92, Pass@1=0.6304 | Provisional pipeline smoke only, because the A anchor was later found to be placeholder-contaminated. |
+| Materialization runner | 74/92, Pass@1=0.8043 | Engineering admission evidence; independently verified repairs can be combined without manual copying. |
+| R26 final admission | 92/92, Pass@1=1.0000 | Engineering closure evidence, not cold-start model performance. |
+
+The 74/92 and 92/92 results are not one-shot cold-start generation results. They are controlled admission and closure results: contract-guided repair experiments first produced independently passing candidates, and the materialization runner then admitted only safe replacements. The existing I-cold-start v0 replay is also not paper-ready because it inherited a contaminated A anchor. A future formal I-cold-start v1 must connect clean A generation, automated repair, and automated admission end to end under a no-leakage configuration.
 
 ### 6.7 EVAS-Spectre Consistency and Runtime
 
@@ -336,11 +429,11 @@ This table should be filled only after running selected final artifacts in Spect
 
 | Condition | EVAS pass count | Spectre/Virtuoso pass count | Agreement | Notes |
 |---|---:|---:|---:|---|
-| A | 18/92 | TBD | TBD | Raw baseline. |
-| D | 48/92 | TBD | TBD | Single-round EVAS repair. |
-| F | 58/92 | TBD | TBD | Main multi-round EVAS result. |
-| H | 59/92 | TBD | TBD | Signature-guided prototype. |
-| I | TBD | TBD | TBD | Contract-aligned assertion-guided repair, ongoing. |
+| A | clean-candidate 35/92; current 20/92 invalid | TBD | TBD | Raw baseline; final number requires clean rerun. |
+| D | 55/92 | TBD | TBD | Single-round EVAS repair. |
+| F | 61/92 | TBD | TBD | Main multi-round EVAS repair evidence. |
+| H-on-F | 65/92 | TBD | TBD | Signature-guided incremental prototype. |
+| I-cold-start v1 | TBD | TBD | TBD | Must rerun from a clean A anchor. |
 
 The final claim should be based on both EVAS-side improvement and Spectre/Virtuoso confirmation on the key conditions.
 
@@ -393,12 +486,13 @@ Verilog-A modeling has a long history in analog and mixed-signal design, but pub
 
 The current system has several limitations.
 
-1. H is still a prototype and currently provides only a small formal gain over F.
-2. H2 evidence is promising but not yet a full formal 92-task condition.
-3. Spectre/Virtuoso acceptance results are still missing from the main condition matrix.
-4. Some tasks remain sensitive to checker runtime and observable configuration.
-5. The benchmark should include a random-retry control to rule out the possibility that gains come only from more LLM attempts.
-6. Template-based repair must be audited for overfitting by requiring signature-based rather than task-name-based triggering.
+1. Kimi A/B/C current-regression rows must be rerun from a clean generated root; the current rows are placeholder-contaminated.
+2. I-cold-start v0 is only a pipeline smoke result and must be replaced by clean I-cold-start v1.
+3. H is still an incremental prototype rather than a cold-start condition.
+4. Spectre/Virtuoso acceptance results are still missing from the main condition matrix.
+5. Some tasks remain sensitive to checker runtime and observable configuration.
+6. The benchmark should include a random-retry control to rule out the possibility that gains come only from more LLM attempts.
+7. Template-based repair must be audited for overfitting by requiring signature-based rather than task-name-based triggering.
 
 These limitations are useful rather than embarrassing: they define the next experiments needed to make the paper rigorous.
 
@@ -410,9 +504,10 @@ The next experiments should be prioritized as follows.
 2. Spectre/Virtuoso acceptance for A, D, F, and H final artifacts.
 3. Same-budget random retry control against D/F/H.
 4. Implement and evaluate condition I: contract-aligned assertion-guided repair.
-5. H/I ablations: signature-gated templates, contract-only feedback, assertion-only feedback, and contract+assertion feedback.
-6. H2/I formalization on the full 92-task matrix if failure-anchor results remain promising.
-7. Failure taxonomy table separating syntax, harness, observable, and behavior failures.
+5. Cold-start replay: start without prior run results, load only skills, contract types, and mechanism cards, and verify that the first failed run creates enough evidence for automated localization and repair; include a no-leakage ablation where contract generation uses only public prompts, public observables, first-round failure evidence, and generic mechanism templates.
+6. H/I ablations: signature-gated templates, contract-only feedback, assertion-only feedback, and contract+assertion feedback.
+7. H2/I formalization on the full 92-task matrix if failure-anchor results remain promising.
+8. Failure taxonomy table separating syntax, harness, observable, and behavior failures.
 
 ## 11. Figures
 
@@ -454,6 +549,25 @@ flowchart TB
   L4 --> L5[Mechanism-aware repair]
 ```
 
+### Figure 4: Reusable experience layer and cold-start loop
+
+```mermaid
+flowchart LR
+  K[Reusable experience assets] --> P[New public prompt]
+  K --> C[Prompt-driven contracts]
+  P --> G[First candidate]
+  G --> E[EVAS score]
+  E --> F[Failure evidence]
+  F --> C
+  C --> V[Contract failure vector]
+  V --> M[Mechanism card]
+  M --> R[Repair prompt]
+  R --> E
+  E --> A[Independently passing artifact]
+  A --> O[Materialization runner]
+  O --> S[Full benchmark re-score]
+```
+
 ## 12. Conclusion
 
-This draft argues that the central bottleneck in LLM-generated Verilog-A is not only model capability, but the lack of fast executable feedback. EVAS addresses this bottleneck by making simulation cheap enough to become the inner loop of repair. The current 92-task results show that EVAS-guided repair substantially improves over raw prompting, especially when moving from no feedback to single-round and multi-round feedback. The next step is to complete the Spectre/Virtuoso consistency and acceptance tables, then extend signature-guided repair into contract-aligned assertion-guided repair so that feedback is both non-overfit and explicitly tied to public behavioral contracts.
+This draft argues that the central bottleneck in LLM-generated Verilog-A is not only model capability, but the lack of fast executable feedback. EVAS addresses this bottleneck by making simulation cheap enough to become the inner loop of repair. It also makes verified data generation practical: failed artifacts, repair attempts, pass/fail preference pairs, and parameterized mechanism variants can be collected at far lower cost than a Spectre-only loop, while Spectre/Virtuoso remains the final acceptance reference. After result hygiene auditing, the paper should separate clean baselines, incremental repair evidence, engineering admission, teacher-data evidence, and invalid/provisional rows rather than mixing all pass counts into one table. The current evidence still shows that EVAS-guided repair improves generated Verilog-A, and that contract-guided experience can be distilled into generic contract types, prompt-driven mechanism inference, mechanism cards, and reusable teacher signals. The next step is to rerun clean A/B/C, replace I-cold-start v0 with clean I-cold-start v1, complete the Spectre/Virtuoso consistency and acceptance tables, and turn the gold/R26 template audit into an executable near-neighbor benchmark for no-leak repair and post-training data construction.
