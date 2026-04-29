@@ -103,6 +103,8 @@ Upload the current paper/experiment coordination material:
 - selected `status/2026-04-28_*.md` used by the A/D/F/G strict-v3 narrative
 - `status/archive/2026-04-legacy-collaboration/README.md`
 
+Make sure `docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md` is included because timing evidence is now part of the main paper story.
+
 Do not upload the archived historical files as current status unless a paper appendix explicitly cites them.
 
 Do not upload local bridge environment files:

@@ -194,6 +194,6 @@ Use this rule:
 
 The clean remote should make this story easy to follow:
 
-`A/D/F/G` strict baseline line -> `H/I` limited continuation -> `92/92` closed-set completion package -> `benchmark-v2` same-type transfer validation.
+`A/D/F/G` strict baseline line -> EVAS/Spectre timing evidence -> `H/I` limited continuation -> `92/92` closed-set completion package -> `benchmark-v2` same-type transfer validation.
 
 Anything that does not support this story should either stay local or be moved to a separate archival remote/object store.

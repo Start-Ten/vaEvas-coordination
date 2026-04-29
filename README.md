@@ -31,11 +31,13 @@
 
 1. 基于原始 92 个 benchmark 做系统扰动，生成更多同类但不重复的新任务。
 2. 从公开 Verilog-A/analog behavioral model/compact-model 资料中提炼可转为 EVAS-compatible Verilog-A 的新架构，再叠加扰动。
+3. 为新旧 benchmark 记录 EVAS vs Spectre 时间表，证明 EVAS 的闭环成本优势。
 
 具体任务说明见：
 
 1. [docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md](docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md)
 2. [docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md](docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md)
+3. [docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md](docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md)
 
 ## 先看哪里
 
@@ -44,14 +46,15 @@
 1. [status/00_CURRENT_MAINLINE.md](status/00_CURRENT_MAINLINE.md)
 2. [docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md](docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md)
 3. [docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md](docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md)
-4. [status/2026-04-29_overnight_execution_summary.md](status/2026-04-29_overnight_execution_summary.md)
-5. [status/2026-04-29_remote_sync_final_version_manifest.md](status/2026-04-29_remote_sync_final_version_manifest.md)
+4. [docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md](docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md)
+5. [status/2026-04-29_overnight_execution_summary.md](status/2026-04-29_overnight_execution_summary.md)
 
 如果你是第一次加入项目，再看：
 
-1. [onboarding/00_START_HERE.md](onboarding/00_START_HERE.md)
-2. [onboarding/QUICK_START.md](onboarding/QUICK_START.md)
-3. [docs/project/REPOSITORIES.md](docs/project/REPOSITORIES.md)
+1. [onboarding/COLLABORATOR_START_HERE.md](onboarding/COLLABORATOR_START_HERE.md)
+2. [onboarding/00_START_HERE.md](onboarding/00_START_HERE.md)
+3. [onboarding/QUICK_START.md](onboarding/QUICK_START.md)
+4. [docs/project/REPOSITORIES.md](docs/project/REPOSITORIES.md)
 
 ## 目录说明
 
@@ -82,6 +85,8 @@
 归档文件可以用于追溯历史讨论，但不再作为当前实验或论文主线依据。
 
 ## 相关代码仓库
+
+第一次加入时，请先看 [onboarding/COLLABORATOR_START_HERE.md](onboarding/COLLABORATOR_START_HERE.md)，里面有需要 clone 的仓库清单和每个仓库的用途。
 
 1. `EVAS`
    模拟器与 Spectre 对齐实现。

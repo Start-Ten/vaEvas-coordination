@@ -15,8 +15,9 @@
 2. [benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md](benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md)
 3. [benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md](benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md)
 4. [benchmark/BENCHMARK_EXPANSION_PLAN.md](benchmark/BENCHMARK_EXPANSION_PLAN.md)
-5. [benchmark/EXPERIMENT_RESULT_LEDGER.md](benchmark/EXPERIMENT_RESULT_LEDGER.md)
-6. [benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md](benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md)
+5. [benchmark/EVAS_SPECTRE_TIMING_PLAN.md](benchmark/EVAS_SPECTRE_TIMING_PLAN.md)
+6. [benchmark/EXPERIMENT_RESULT_LEDGER.md](benchmark/EXPERIMENT_RESULT_LEDGER.md)
+7. [benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md](benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md)
 
 ## 3. 架构与方法
 
@@ -42,9 +43,10 @@
 
 ## 6. 新人接入
 
-1. [../onboarding/00_START_HERE.md](../onboarding/00_START_HERE.md)
-2. [../onboarding/QUICK_START.md](../onboarding/QUICK_START.md)
-3. [../onboarding/NEW_MEMBER_START.md](../onboarding/NEW_MEMBER_START.md)
+1. [../onboarding/COLLABORATOR_START_HERE.md](../onboarding/COLLABORATOR_START_HERE.md)
+2. [../onboarding/00_START_HERE.md](../onboarding/00_START_HERE.md)
+3. [../onboarding/QUICK_START.md](../onboarding/QUICK_START.md)
+4. [../onboarding/NEW_MEMBER_START.md](../onboarding/NEW_MEMBER_START.md)
 
 ## 7. 归档
 

@@ -5,11 +5,13 @@
 ## 1. 当前阅读顺序
 
 1. [README.md](README.md)
-2. [status/00_CURRENT_MAINLINE.md](status/00_CURRENT_MAINLINE.md)
-3. [docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md](docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md)
-4. [docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md](docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md)
-5. [status/2026-04-29_remote_sync_final_version_manifest.md](status/2026-04-29_remote_sync_final_version_manifest.md)
-6. [docs/00_DOC_MAP.md](docs/00_DOC_MAP.md)
+2. [onboarding/COLLABORATOR_START_HERE.md](onboarding/COLLABORATOR_START_HERE.md)
+3. [status/00_CURRENT_MAINLINE.md](status/00_CURRENT_MAINLINE.md)
+4. [docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md](docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md)
+5. [docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md](docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md)
+6. [docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md](docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md)
+7. [status/2026-04-29_remote_sync_final_version_manifest.md](status/2026-04-29_remote_sync_final_version_manifest.md)
+8. [docs/00_DOC_MAP.md](docs/00_DOC_MAP.md)
 
 ## 2. 目录职责
 
@@ -20,6 +22,12 @@
 主目录只放当前主线文件；旧 A/B 协作、Terminal B prompt、早期 H/I 调试、fail 列表、旧 qwen/kimi 探索结果统一放到 `status/archive/2026-04-legacy-collaboration/`。
 
 当前对外协作目标是 benchmark expansion。协作者优先看 `docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md`，而不是 archive 里的历史修复记录。
+
+同时，后续 benchmark 扩展应记录 EVAS vs Spectre timing，支撑“EVAS 作为快速闭环反馈引擎”的论文主张。
+
+### `onboarding/`
+
+如果你是第一次拿到这个协作库，先看 `onboarding/COLLABORATOR_START_HERE.md`。它解释项目在做什么、需要 clone 哪些仓库、每个仓库用途是什么，然后才进入 benchmark 扩展任务。
 
 ### `docs/`
 

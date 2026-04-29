@@ -21,6 +21,9 @@ The paper should tell one clean story:
    anchors;
 4. engineering admission/closure results are useful, but they are not model
    baselines.
+5. timing evidence is part of the main claim: Spectre/Virtuoso remains the
+   final acceptance reference, while EVAS is fast enough to serve as the
+   inner repair loop and teacher-data construction engine.
 
 ## Official Conditions To Keep
 
@@ -125,6 +128,22 @@ I   if clean no-leak run is complete
 
 `H-on-F` can appear in the same section as a residual-repair extension, but it
 must be visually separated from cold-start rows.
+
+### Main Timing Table
+
+Use [EVAS_SPECTRE_TIMING_PLAN.md](EVAS_SPECTRE_TIMING_PLAN.md) to report:
+
+```text
+EVAS wall time
+Spectre wall time
+speedup
+inner-loop counterfactual cost
+EVAS-inner-loop + Spectre-final-acceptance cost
+```
+
+The timing table should make clear that EVAS does not replace Spectre as the
+final judge; it reduces the cost of repeated generation, repair, and data
+construction attempts before final Spectre acceptance.
 
 ### Ablation Table
 

@@ -14,6 +14,7 @@
 4. 通过 verified teacher/template artifacts 完成原始 92 个任务的闭集 completion。
 5. 用 benchmark-v2 扰动任务验证这些 artifact 是否能迁移到同类新任务。
 6. 让协作者扩展 benchmark：一部分来自原始 92 的系统扰动，一部分来自公开 Verilog-A/analog behavioral model 架构转化。
+7. 补充 EVAS vs Spectre 时间表，证明 EVAS 不只是结果一致，也足够快，可以承担闭环内循环和 teacher-data 构建。
 
 ## 当前协作目标
 
@@ -24,6 +25,7 @@
 1. `docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md`
 2. `docs/benchmark/VAEVAS_BENCHMARK_V2_PERTURBATION_PLAN.md`
 3. `docs/benchmark/BENCHMARK_EXPANSION_PLAN.md`
+4. `docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md`
 
 交付物应该进入 `behavioral-veriloga-eval/benchmark-v2/`，不要直接污染原始 92。
 
@@ -42,6 +44,7 @@
 | `2026-04-29_rag_upgrade_notes.md` | RAG-v2 当前结论和下一步。 |
 | `2026-04-29_remote_sync_final_version_manifest.md` | 各仓库 remote 应上传的最终文件清单。 |
 | `../docs/benchmark/BENCHMARK_EXPANSION_ASSIGNMENT.md` | 当前外部协作的 benchmark 扩展任务说明。 |
+| `../docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md` | EVAS vs Spectre 时间效率实验计划。 |
 
 ## 论文表述边界
 
@@ -51,6 +54,7 @@
 2. H/I 展示了机制引导闭环的延续能力，但还不能宣称解决 cold-start generation。
 3. 92/92 是带有 teacher/template provenance 的闭集 completion package，不是纯 cold-start LLM 结果。
 4. benchmark-v2 是后续验证迁移和泛化的关键测试。
+5. 时间表应作为主线证据：Spectre 是最终裁判，EVAS 是高吞吐闭环反馈引擎。
 
 不要这样说：
 

@@ -10,6 +10,8 @@ Result ledger: [EXPERIMENT_RESULT_LEDGER.md](/Users/bucketsran/Documents/TsingPr
 
 Clean condition matrix: [CLEAN_EXPERIMENT_CONDITION_MATRIX.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/benchmark/CLEAN_EXPERIMENT_CONDITION_MATRIX.md)
 
+Timing plan: [EVAS_SPECTRE_TIMING_PLAN.md](/Users/bucketsran/Documents/TsingProject/vaEvas/coordination/docs/benchmark/EVAS_SPECTRE_TIMING_PLAN.md)
+
 ---
 
 ## Abstract
@@ -78,6 +80,8 @@ The intended evidence chain is:
 2. show that EVAS is substantially faster than Spectre/Virtuoso on the same stimuli;
 3. use EVAS to run many repair candidates and iterations;
 4. confirm the key improvements in Spectre/Virtuoso.
+
+The final paper should therefore include both a pass-rate table and a timing table.  The timing table should report EVAS wall time, Spectre wall time, speedup, and the counterfactual cost of using Spectre for every repair attempt. This turns the claim from "EVAS can validate these tasks" into the stronger claim that "EVAS makes repeated executable feedback economically feasible."
 
 This distinction matters. If EVAS were merely faster but not behaviorally aligned, its feedback would not be trustworthy. If EVAS were aligned but not faster, it would not enable high-frequency repair. The contribution requires both properties.
 

@@ -4,10 +4,11 @@
 
 ## A. 你要先做什么（10 分钟）
 
-1. 看项目定位：`../README.md`
-2. 看新人最短路径：`./QUICK_START.md`
-3. 看仓库/分支可见性说明：`../status/2026-04-12_repo-visibility-note.md`
-4. 看可执行 SSH + bridge 手册：`./SSH_TUNNEL_DAEMON_RUNBOOK.md`
+1. 看协作者启动页：`./COLLABORATOR_START_HERE.md`
+2. 看项目定位：`../README.md`
+3. 看新人最短路径：`./QUICK_START.md`
+4. 看仓库/分支可见性说明：`../status/2026-04-12_repo-visibility-note.md`
+5. 看可执行 SSH + bridge 手册：`./SSH_TUNNEL_DAEMON_RUNBOOK.md`
 
 ## B. 按顺序执行（第一天）
 
