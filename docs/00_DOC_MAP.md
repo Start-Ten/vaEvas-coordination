@@ -19,6 +19,7 @@
 6. [benchmark/EXPERIMENT_RESULT_LEDGER.md](benchmark/EXPERIMENT_RESULT_LEDGER.md)
 7. [benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md](benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md)
 8. [../status/2026-04-29_G_plus_LEGO_full92_result.md](../status/2026-04-29_G_plus_LEGO_full92_result.md)
+9. [../status/2026-04-29_benchmark_v2_expanded400.md](../status/2026-04-29_benchmark_v2_expanded400.md)
 
 ## 3. 架构与方法
 

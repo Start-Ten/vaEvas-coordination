@@ -87,6 +87,26 @@ benchmark-v2 的任务就是补上这部分证据。
 
 每批都必须保留 EVAS/Spectre 验证摘要。
 
+## 2026-04-29 更新：benchmark-v2 已扩展到 400
+
+当前已完成 400 个 materialized draft tasks：
+
+- `v2-small`: 30
+- `v2-seed-perturbation-r1`: 30
+- `v2-seed-perturbation-r2`: 120
+- `v2-hard-negative-r1`: 100
+- `v2-external-architecture-r1`: 120
+
+验证状态：
+
+- 初始 `v2-small`: EVAS 30/30, Spectre 30/30
+- 新增 370: EVAS 370/370, Spectre 370/370
+- 新增任务 Spectre smoke: 12/12，已被完整 Spectre run 覆盖
+
+完整记录见：
+
+`coordination/status/2026-04-29_benchmark_v2_expanded400.md`
+
 ## 与论文关系
 
 论文叙事应这样组织：
