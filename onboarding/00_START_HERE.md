@@ -1,45 +1,40 @@
-# 00 Start Here（新人第一入口）
+# 00 Start Here
 
-如果你只看一个文件，就先看这个。
+If you only read one onboarding file, read this.
 
-## A. 你要先做什么（10 分钟）
+## Current Goal
 
-1. 看协作者启动页：`./COLLABORATOR_START_HERE.md`
-2. 看项目定位：`../README.md`
-3. 看新人最短路径：`./QUICK_START.md`
-4. 看可安装 skills：`../skills/README.md`
-5. 看 issue/PR/微信流程：`../docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md`
-6. 看仓库/分支可见性说明：`../status/2026-04-12_repo-visibility-note.md`
-7. 看可执行 SSH + bridge 手册：`./SSH_TUNNEL_DAEMON_RUNBOOK.md`
+We are preparing a Verilog-A behavioral modeling practice paper around:
 
-## B. 按顺序执行（第一天）
+```text
+vaBench benchmark + EVAS Spectre-aligned fast evaluator
+```
 
-1. 环境和 Git：`./ONBOARDING_CHECKLIST_TEAM.md`
-2. Virtuoso + EVAS 最小理解：`./VIRTUOSO_EVAS_TEAM_GUIDE.md`
-3. 闭环验证规范：`../docs/benchmark/EVAS_VIRTUOSO_CLOSED_LOOP_BENCHMARK.md`
-4. 一键 AI 指令块：`./AI_ONE_CLICK_TUNNEL_AND_LOOP_PROMPTS.md`
-5. 可选安装 agent skills：`python3 ../skills/install_recommended_skills.py --all`
+Do not start from benchmark-v2, bpack48, full92, or old provider experiments.
+Those were development history, not the current paper denominator.
 
-## C. 你应该交付什么
+## First 15 Minutes
 
-1. 一次 tunnel + daemon 可用证据
-2. 一次 EVAS-first 闭环结果（含 consistency_report 和 gate 结果）
-3. 一段 8 行以内的执行结论
+1. Read `../README.md`.
+2. Read `../status/00_CURRENT_MAINLINE.md`.
+3. Read `../docs/project/PROJECT_OVERVIEW.md`.
+4. Read `../referencepaper/README.md`.
+5. Read `../../behavioral-veriloga-eval/benchmark-vabench-release-v1/README.md`.
+6. Read `../../behavioral-veriloga-eval/benchmark-vabench-release-v1/reports/claim_gate.md`.
 
-## D. 如果你卡住
+## Current Useful Tasks
 
-1. 先看：`../docs/ops/UPLOAD_PACK_NOTE.md`
-2. 再看：`../docs/ops/ISSUE_PR_WECHAT_WORKFLOW.md`
-3. 再按：`./AI_ONE_CLICK_TUNNEL_AND_LOOP_PROMPTS.md` 的故障定位 Prompt
-4. 如果确认是项目问题，先提 issue；如果已有修复，提 PR 后微信通知 bucketsran
+1. Audit L2 checkers for real mixed-signal/composition behavior.
+2. Keep release reports synchronized after any benchmark or certification change.
+3. Investigate EVAS slow timing outliers before any speed claim.
+4. Run model baselines only against counted release entries/forms.
+5. Read and summarize AMS/Verilog-A-adjacent papers from `referencepaper/README.md`.
 
-## E. 如果任务名在文档里，但你本地仓库里找不到
+## Minimum Evidence For Any Update
 
-先不要直接判断自己拉错仓库。
+Every status update should name:
 
-按这个顺序做：
-
-1. 看：`../status/2026-04-12_repo-visibility-note.md`
-2. 看：`../docs/project/REPOSITORIES.md`
-3. 确认自己当前的 `remote` 和 `branch`
-4. 再向负责人确认当前建议使用的 source branch / fork
+1. changed file or report.
+2. command or source used.
+3. current claim boundary.
+4. remaining blocked claim, if any.

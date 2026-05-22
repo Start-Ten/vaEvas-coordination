@@ -62,7 +62,7 @@ Never stage these unless the user explicitly asks and the file is safe:
 
 For `behavioral-veriloga-eval`, prefer final mainline artifacts and compact summaries over old generated sweeps.
 
-For `coordination`, prefer current benchmark expansion docs, current status summaries, datasets/scripts, and archive README; do not publish local-private bridge env files.
+For `coordination`, prefer current release pointers, related-work notes, current status summaries, skills, and templates; do not publish local-private bridge env files or stale experiment ledgers.
 
 ## Validation Checklist
 

@@ -13,7 +13,7 @@
 
 | skill | 用途 | 适合什么时候用 |
 |---|---|---|
-| `vaevas-workflow` | 把 vaEvas 任务变成 brief/KPI/plan/validation/review 的执行闭环 | 做 benchmark、runner、EVAS、skills 或流程改动前 |
+| `vaevas-workflow` | 把 vaEvas 任务变成 brief/KPI/plan/validation/review 的执行闭环 | 做 release reports、checker audit、runner、EVAS、skills 或流程改动前 |
 | `vaevas-git-sync` | 安全检查、提交、推送 vaEvas 多仓库改动 | 需要确认本地和 remote 是否同步、准备提交或 PR 时 |
 
 安装到默认 Codex skill 目录：
@@ -66,7 +66,7 @@ python3 skills/install_recommended_skills.py --all --codex-home /custom/codex/ho
 
 ## 3. 使用原则
 
-1. 对 benchmark 扩展任务，优先使用 `vaevas-workflow`。
+1. 对 release report、checker audit、EVAS/Spectre 对齐和 paper-facing validation 任务，优先使用 `vaevas-workflow`。
 2. 对提交、同步、PR 前检查，优先使用 `vaevas-git-sync`。
 3. 发现 benchmark、checker、EVAS、Spectre 对齐问题时，先按 issue/PR 流程记录，不要只在聊天里口头说明。
 4. 任何包含 API key、bridge env、raw LLM response、大型仿真结果的文件都不要放进 skill 或 coordination。
